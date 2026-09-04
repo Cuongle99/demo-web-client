@@ -29,6 +29,7 @@ export interface ProductVariant {
   title: string;
   sku?: string;
   availableForSale: boolean;
+  quantityAvailable?: number;
   price: Money;
   compareAtPrice?: Money;
   selectedOptions: Array<{ name: string; value: string }>;

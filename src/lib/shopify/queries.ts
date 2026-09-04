@@ -12,7 +12,7 @@ export const PRODUCT_FRAGMENT = `#graphql
         ... on ExternalVideo { embedUrl host }
       }
     }
-    variants(first: 50) { nodes { id title sku availableForSale selectedOptions { name value } price { amount currencyCode } compareAtPrice { amount currencyCode } } }
+    variants(first: 50) { nodes { id title sku availableForSale quantityAvailable selectedOptions { name value } price { amount currencyCode } compareAtPrice { amount currencyCode } } }
     collections(first: 10) { nodes { handle title } }
     metafields(identifiers: [
       {namespace: "custom", key: "specifications"}, {namespace: "custom", key: "dimensions"},

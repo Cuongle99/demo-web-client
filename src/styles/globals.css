@@ -1174,6 +1174,10 @@ summary:focus-visible {
   color: #197044
 }
 
+.product-variants__stock.is-low-stock {
+  color: #a85c00
+}
+
 .product-variants__stock.is-unavailable {
   color: var(--color-danger)
 }

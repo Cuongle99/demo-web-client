@@ -27,6 +27,18 @@ function optionsFor(variant?: ProductVariant) {
   }));
 }
 
+function stockStatus(variant?: ProductVariant) {
+  if (!variant?.availableForSale) return { label: "Tạm hết hàng", className: "is-unavailable" };
+  if (typeof variant.quantityAvailable === "number") {
+    if (variant.quantityAvailable === 0) return { label: "Có thể đặt hàng", className: "is-available" };
+    return {
+      label: `Còn ${variant.quantityAvailable.toLocaleString("vi-VN")} sản phẩm trong kho`,
+      className: variant.quantityAvailable <= 5 ? "is-low-stock" : "is-available",
+    };
+  }
+  return { label: "Còn hàng", className: "is-available" };
+}
+
 export function ProductInfo({ product }: { product: Product }) {
   const initialVariant = product.variants.find((variant) => variant.availableForSale) ?? product.variants[0];
   const [selectedVariantId, setSelectedVariantId] = useState(initialVariant?.id ?? "");
@@ -49,6 +61,7 @@ export function ProductInfo({ product }: { product: Product }) {
   const hasDiscount = Boolean(
     compareAtPrice && Number(compareAtPrice.amount) > Number(selectedVariant?.price.amount ?? 0),
   );
+  const inventory = stockStatus(selectedVariant);
 
   function selectOption(name: string, value: string) {
     const wanted = new Map(selectedOptions);
@@ -116,9 +129,9 @@ export function ProductInfo({ product }: { product: Product }) {
               </div>
             </fieldset>
           ))}
-          <p className={`product-variants__stock ${selectedVariant?.availableForSale ? "is-available" : "is-unavailable"}`} role="status">
+          <p className={`product-variants__stock ${inventory.className}`} role="status">
             <span aria-hidden="true" />
-            {selectedVariant?.availableForSale ? "Còn hàng" : "Tạm hết hàng"}
+            {inventory.label}
           </p>
         </div>
       )}

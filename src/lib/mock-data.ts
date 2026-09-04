@@ -24,6 +24,7 @@ function product(
         title: "Mặc định",
         sku,
         availableForSale: true,
+        quantityAvailable: 12,
         price: { amount: price, currencyCode: "VND" },
         selectedOptions: [],
       },
