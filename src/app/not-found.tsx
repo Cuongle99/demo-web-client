@@ -1,0 +1,1 @@
+import Link from "next/link"; export default function NotFound() { return <div className="inner-page container empty-state"><p className="eyebrow">Lỗi 404</p><h1>Không tìm thấy trang</h1><p>Trang bạn đang tìm có thể đã được di chuyển hoặc không còn tồn tại.</p><Link className="button button--primary" href="/">Về trang chủ</Link></div>; }
