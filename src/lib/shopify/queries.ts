@@ -3,6 +3,15 @@ export const PRODUCT_FRAGMENT = `#graphql
     id handle title description descriptionHtml productType vendor tags
     featuredImage { url altText width height }
     images(first: 12) { nodes { url altText width height } }
+    media(first: 20) {
+      nodes {
+        id alt mediaContentType
+        previewImage { url altText width height }
+        ... on MediaImage { image { url altText width height } }
+        ... on Video { sources { url mimeType format height width } }
+        ... on ExternalVideo { embedUrl host }
+      }
+    }
     variants(first: 50) { nodes { id title sku availableForSale price { amount currencyCode } compareAtPrice { amount currencyCode } } }
     collections(first: 10) { nodes { handle title } }
     metafields(identifiers: [

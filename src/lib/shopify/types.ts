@@ -6,6 +6,19 @@ export interface CatalogImage {
   focalPosition?: string;
 }
 
+export interface VideoSource {
+  url: string;
+  mimeType: string;
+  format: string;
+  width?: number;
+  height?: number;
+}
+
+export type ProductMedia =
+  | { id: string; type: "image"; altText: string; image: CatalogImage }
+  | { id: string; type: "video"; altText: string; previewImage?: CatalogImage; sources: VideoSource[] }
+  | { id: string; type: "externalVideo"; altText: string; previewImage?: CatalogImage; embedUrl: string; host?: string };
+
 export interface Money {
   amount: string;
   currencyCode: string;
@@ -35,6 +48,7 @@ export interface Product {
   descriptionHtml: string;
   featuredImage?: CatalogImage;
   images: CatalogImage[];
+  media: ProductMedia[];
   variants: ProductVariant[];
   productType?: string;
   vendor?: string;

@@ -908,17 +908,73 @@ summary:focus-visible {
   padding: 1rem
 }
 
+.product-gallery__main video,
+.product-gallery__main iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #08141b
+}
+
+.product-gallery__main video {
+  object-fit: contain
+}
+
+.product-gallery__main--video,
+.product-gallery__main--externalVideo {
+  background: #08141b
+}
+
+.product-gallery__thumb-carousel {
+  margin-top: .75rem
+}
+
+.product-gallery__thumb-carousel.has-controls {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) 34px;
+  align-items: center;
+  gap: .45rem
+}
+
 .product-gallery__thumbs {
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: 82px;
   gap: .65rem;
-  margin-top: .75rem;
   padding: 2px 2px .35rem;
   overflow-x: auto;
   overscroll-behavior-inline: contain;
-  scrollbar-width: thin;
-  scrollbar-color: #b8cbd8 transparent
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none
+}
+
+.product-gallery__thumbs::-webkit-scrollbar {
+  display: none
+}
+
+.product-gallery__thumb-arrow {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--color-line);
+  border-radius: 50%;
+  background: #fff;
+  color: var(--color-navy);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer
+}
+
+.product-gallery__thumb-arrow svg {
+  width: 18px;
+  height: 18px
+}
+
+.product-gallery__thumb-arrow:disabled {
+  opacity: .32;
+  cursor: default
 }
 
 .product-gallery__thumb {
@@ -930,6 +986,7 @@ summary:focus-visible {
   overflow: hidden;
   background: #fff;
   cursor: pointer;
+  scroll-snap-align: start;
   transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease
 }
 
@@ -946,6 +1003,39 @@ summary:focus-visible {
 .product-gallery__thumb img {
   object-fit: contain;
   padding: .25rem
+}
+
+.product-gallery__play {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: rgba(0, 147, 163, .92);
+  color: #fff;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, .25)
+}
+
+.product-gallery__play svg {
+  width: 15px;
+  height: 15px;
+  margin-left: 2px
+}
+
+.product-gallery__thumb-placeholder {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: end center;
+  padding-bottom: .3rem;
+  background: #102934;
+  color: #fff;
+  font-size: .58rem;
+  font-weight: 700;
+  text-transform: uppercase
 }
 
 .product-info {

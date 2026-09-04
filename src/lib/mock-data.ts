@@ -17,6 +17,7 @@ function product(
     descriptionHtml: `<p>${title} được tuyển chọn theo tiêu chuẩn chất lượng nghiêm ngặt, vận hành ổn định và dễ sử dụng.</p>`,
     featuredImage: image,
     images: [image],
+    media: [{ id: `mock-${handle}-image`, type: "image", altText: title, image }],
     variants: [
       {
         id: `mock-${handle}-default`,
