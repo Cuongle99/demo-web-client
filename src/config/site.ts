@@ -11,7 +11,6 @@ export const siteConfig = {
   nav: [
     { label: "Trang chủ", href: "/" },
     { label: "Sản phẩm", href: "/collections" },
-    { label: "Thương hiệu", href: "/#thuong-hieu" },
     { label: "Dịch vụ", href: "/#dich-vu" },
     { label: "Tin tức", href: "/blogs" },
     { label: "Liên hệ", href: "/contact" },
