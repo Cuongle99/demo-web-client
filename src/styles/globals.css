@@ -904,12 +904,60 @@ summary:focus-visible {
 }
 
 .product-gallery__main img {
-  object-fit: cover;
-  transform: scale(1.8)
+  object-fit: contain;
+  padding: 1rem
+}
+
+.product-gallery__thumbs {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 82px;
+  gap: .65rem;
+  margin-top: .75rem;
+  padding: 2px 2px .35rem;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #b8cbd8 transparent
+}
+
+.product-gallery__thumb {
+  position: relative;
+  aspect-ratio: 1;
+  padding: 0;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: #fff;
+  cursor: pointer;
+  transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease
+}
+
+.product-gallery__thumb:hover {
+  border-color: var(--color-teal);
+  transform: translateY(-1px)
+}
+
+.product-gallery__thumb.is-active {
+  border: 2px solid var(--color-teal);
+  box-shadow: 0 0 0 2px rgba(0, 147, 163, .14)
+}
+
+.product-gallery__thumb img {
+  object-fit: contain;
+  padding: .25rem
 }
 
 .product-info {
   padding-top: 1rem
+}
+
+.product-info h1 {
+  max-width: 20ch;
+  font-size: clamp(1.75rem, 2.4vw, 2.35rem);
+  line-height: 1.18;
+  letter-spacing: -.025em;
+  text-wrap: balance
 }
 
 .product-info__meta {
@@ -957,6 +1005,12 @@ summary:focus-visible {
 .product-specs,
 .related-products {
   margin-top: 3rem
+}
+
+.related-products__grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: .75rem
 }
 
 .product-description h2,
@@ -2843,5 +2897,27 @@ body {
   .footer-newsletter,
   .footer-column:nth-of-type(4) {
     grid-column: 1
+  }
+}
+
+@media(max-width:900px) {
+  .related-products__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr))
+  }
+}
+
+@media(max-width:700px) {
+  .product-gallery__thumbs {
+    grid-auto-columns: 70px
+  }
+
+  .product-info h1 {
+    max-width: none;
+    font-size: clamp(1.65rem, 7vw, 2rem)
+  }
+
+  .related-products__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: .65rem
   }
 }
