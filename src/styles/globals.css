@@ -30,8 +30,9 @@ summary:focus-visible {
 }
 
 .utility-bar {
-  height: 28px;
-  background: #f5f7f9;
+  height: 34px;
+  border-bottom: 1px solid #e7edf2;
+  background: linear-gradient(90deg, #f4f8fa, #f8fafc);
   color: #34475a;
   font-size: .68rem
 }
@@ -43,11 +44,64 @@ summary:focus-visible {
   justify-content: space-between
 }
 
-.utility-bar p,
+.utility-contact,
 .utility-bar nav {
   display: flex;
   align-items: center;
-  gap: 1rem
+}
+
+.utility-contact {
+  gap: .75rem
+}
+
+.utility-contact a {
+  display: inline-flex;
+  align-items: center
+}
+
+.utility-contact__hotline {
+  min-height: 26px;
+  gap: .35rem;
+  padding: .25rem .7rem .25rem .45rem;
+  border: 1px solid rgba(0, 142, 160, .16);
+  border-radius: 999px;
+  background: rgba(0, 142, 160, .08);
+  color: var(--color-navy)
+}
+
+.utility-contact__hotline svg {
+  width: 16px;
+  height: 16px;
+  color: var(--color-teal)
+}
+
+.utility-contact__hotline span {
+  color: var(--color-muted)
+}
+
+.utility-contact__hotline strong {
+  font-weight: 800;
+  letter-spacing: .01em
+}
+
+.utility-contact__email {
+  gap: .35rem;
+  color: #4f6070
+}
+
+.utility-contact__email svg {
+  width: 15px;
+  height: 15px;
+  color: var(--color-teal)
+}
+
+.utility-bar nav {
+  gap: .2rem
+}
+
+.utility-bar nav a {
+  padding: .25rem .45rem;
+  border-radius: 999px
 }
 
 .utility-bar svg {
@@ -55,6 +109,7 @@ summary:focus-visible {
 }
 
 .utility-bar nav a:hover {
+  background: rgba(0, 142, 160, .08);
   color: var(--color-teal)
 }
 
@@ -168,7 +223,7 @@ summary:focus-visible {
 .main-nav {
   border-top: 1px solid #f0f2f4;
   border-bottom: 1px solid var(--color-line);
-  height: 40px
+  height: 46px
 }
 
 .main-nav__inner {
@@ -178,23 +233,44 @@ summary:focus-visible {
 }
 
 .catalog-menu {
-  width: 205px;
+  width: 235px;
+  flex: 0 0 235px;
   position: relative;
-  background: var(--color-teal);
-  color: #fff
+  border-radius: 7px 7px 0 0;
+  background: linear-gradient(135deg, #0094a7, #007f91);
+  box-shadow: 0 4px 14px rgba(0, 126, 145, .18);
+  color: #fff;
+  overflow: visible
 }
 
 .catalog-menu summary {
   height: 100%;
   display: flex;
   align-items: center;
-  gap: .6rem;
-  padding: 0 1.5rem;
+  gap: .65rem;
+  padding: 0 1rem;
   text-transform: uppercase;
   font-size: .72rem;
   font-weight: 800;
+  letter-spacing: .015em;
+  white-space: nowrap;
   list-style: none;
-  cursor: pointer
+  cursor: pointer;
+  transition: background-color .18s ease, box-shadow .18s ease
+}
+
+.catalog-menu summary svg {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto
+}
+
+.catalog-menu summary span {
+  line-height: 1
+}
+
+.catalog-menu[open] summary {
+  background: var(--color-teal-dark)
 }
 
 .catalog-menu summary::-webkit-details-marker,
@@ -205,17 +281,33 @@ summary:focus-visible {
 .catalog-menu__panel {
   position: absolute;
   z-index: 20;
-  inset: 40px 0 auto;
+  inset: 100% auto auto 0;
+  width: min(330px, calc(100vw - 2rem));
+  border: 1px solid var(--color-line);
+  border-top: 0;
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
   background: #fff;
   color: var(--color-ink);
   box-shadow: var(--shadow-md);
-  padding: .5rem
+  padding: .55rem
 }
 
 .catalog-menu__panel a {
   display: block;
-  padding: .7rem;
-  border-bottom: 1px solid var(--color-line)
+  padding: .7rem .8rem;
+  border-bottom: 1px solid #edf1f4;
+  border-radius: var(--radius-sm);
+  font-size: .84rem;
+  font-weight: 650
+}
+
+.catalog-menu__panel a:last-child {
+  border-bottom: 0
+}
+
+.catalog-menu__panel a:hover {
+  background: var(--color-sky);
+  color: var(--color-teal)
 }
 
 .desktop-nav {
@@ -2267,7 +2359,16 @@ body {
 /* Mobile polish: clearer hierarchy, roomier cards, and a shorter footer. */
 @media(max-width:700px) {
   .utility-bar {
-    height: 24px
+    height: 34px
+  }
+
+  .utility-contact__email {
+    display: none
+  }
+
+  .utility-contact__hotline {
+    min-height: 27px;
+    padding-inline: .55rem .7rem
   }
 
   .header-main {

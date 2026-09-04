@@ -13,7 +13,18 @@ export async function Header() {
     <header className="site-header">
       <div className="utility-bar">
         <div className="container utility-bar__inner">
-          <p><Phone weight="fill" /> Hotline: <strong>{siteConfig.phone}</strong> <span><EnvelopeSimple /> Email: {siteConfig.email}</span></p>
+          <div className="utility-contact">
+            <a className="utility-contact__hotline" href={siteConfig.phoneHref}>
+              <Phone weight="fill" />
+              <span>Hotline</span>
+              <strong>{siteConfig.phone}</strong>
+            </a>
+            <a className="utility-contact__email" href={`mailto:${siteConfig.email}`}>
+              <EnvelopeSimple weight="bold" />
+              <span>Email:</span>
+              {siteConfig.email}
+            </a>
+          </div>
           <nav aria-label="Tiện ích"><Link href="/contact">Về Toàn Tâm</Link><Link href="/#tin-tuc">Tin tức</Link><Link href="/contact">Liên hệ</Link></nav>
         </div>
       </div>
@@ -31,7 +42,7 @@ export async function Header() {
       <nav className="main-nav" aria-label="Điều hướng chính">
         <div className="container main-nav__inner">
           <details className="catalog-menu">
-            <summary><List weight="bold" /> Danh mục sản phẩm</summary>
+            <summary><List weight="bold" /><span>Danh mục sản phẩm</span></summary>
             <div className="catalog-menu__panel">
               {menuCollections.map((collection) => <Link href={`/collections/${collection.handle}`} key={collection.handle}>{collection.title}</Link>)}
             </div>
