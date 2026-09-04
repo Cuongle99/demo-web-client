@@ -439,8 +439,17 @@ summary:focus-visible {
 }
 
 .category-card__image img {
-  object-fit: cover;
-  transform: scale(2.5)
+  object-fit: cover
+}
+
+.category-card__image .collection-list-card__icon::before {
+  width: 72%;
+  height: 72%
+}
+
+.category-card__image .collection-list-card__icon svg {
+  width: 44%;
+  height: 44%
 }
 
 .category-card strong {
