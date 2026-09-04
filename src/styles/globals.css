@@ -1013,6 +1013,10 @@ summary:focus-visible {
   gap: .75rem
 }
 
+.related-products .carousel {
+  margin-inline: 2px
+}
+
 .product-description h2,
 .product-specs h2 {
   font-size: 1.35rem;
