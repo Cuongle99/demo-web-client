@@ -903,6 +903,13 @@ summary:focus-visible {
   background: #f7fafc
 }
 
+.product-gallery,
+.product-gallery__thumb-carousel,
+.product-gallery__thumbs {
+  min-width: 0;
+  max-width: 100%
+}
+
 .product-gallery__main img {
   object-fit: contain;
   padding: 1rem
