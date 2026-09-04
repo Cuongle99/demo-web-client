@@ -25,6 +25,7 @@ function product(
         sku,
         availableForSale: true,
         price: { amount: price, currencyCode: "VND" },
+        selectedOptions: [],
       },
     ],
     productType: type,

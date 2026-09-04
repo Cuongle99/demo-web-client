@@ -31,6 +31,7 @@ export interface ProductVariant {
   availableForSale: boolean;
   price: Money;
   compareAtPrice?: Money;
+  selectedOptions: Array<{ name: string; value: string }>;
 }
 
 export interface Metafield {
