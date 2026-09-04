@@ -1074,10 +1074,6 @@ summary:focus-visible {
   margin: 1.1rem 0
 }
 
-.product-info__description {
-  color: var(--color-muted)
-}
-
 .product-info ul {
   margin: 1.2rem 0
 }
