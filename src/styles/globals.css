@@ -30,7 +30,7 @@ summary:focus-visible {
 }
 
 .utility-bar {
-  height: 34px;
+  height: 40px;
   border-bottom: 1px solid #e7edf2;
   background: linear-gradient(90deg, #f4f8fa, #f8fafc);
   color: #34475a;
@@ -734,7 +734,7 @@ summary:focus-visible {
 
 .footer-contact__grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: .95fr 1.15fr 1fr 1.45fr;
   min-height: 68px;
   align-items: center
 }
@@ -766,6 +766,17 @@ summary:focus-visible {
 .footer-contact__grid strong {
   font-size: .7rem;
   margin-top: .2rem
+}
+
+.footer-contact__address strong {
+  line-height: 1.45;
+  text-wrap: balance
+}
+
+@media(min-width:701px) {
+  .footer-contact__grid>:last-child {
+    border-right: 0
+  }
 }
 
 .footer-main {

@@ -18,7 +18,7 @@ export async function Footer() {
           <a href={siteConfig.phoneHref}><Phone /><span>Tư vấn miễn phí<strong>{siteConfig.phone}</strong></span></a>
           <a href={`mailto:${siteConfig.email}`}><EnvelopeSimple /><span>Email<strong>{siteConfig.email}</strong></span></a>
           <p><Clock /><span>Thời gian làm việc<strong>T2 - T7: 8:00 - 17:30</strong></span></p>
-          <p><MapPin /><span>Địa chỉ<strong>{siteConfig.address}</strong></span></p>
+          <p className="footer-contact__address"><MapPin /><span>Địa chỉ<strong>{siteConfig.address}</strong></span></p>
         </div>
       </div>
       <div className="footer-main">
