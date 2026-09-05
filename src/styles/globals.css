@@ -880,13 +880,20 @@ summary:focus-visible {
 }
 
 .breadcrumb li {
+  flex: 0 0 auto;
   min-width: 0;
   display: flex;
   align-items: center;
   gap: .5rem
 }
 
+.breadcrumb li:last-child {
+  flex: 1 1 auto;
+  overflow: hidden
+}
+
 .breadcrumb li:not(:first-child)::before {
+  flex: 0 0 auto;
   content: "\203A";
   color: #96a4b2;
   font-size: 1rem;
@@ -904,6 +911,7 @@ summary:focus-visible {
 }
 
 .breadcrumb [aria-current="page"] {
+  flex: 1 1 auto;
   display: block;
   min-width: 0;
   overflow: hidden;
