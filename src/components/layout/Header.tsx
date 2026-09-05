@@ -14,15 +14,15 @@ export async function Header() {
       <div className="utility-bar">
         <div className="container utility-bar__inner">
           <div className="utility-contact">
-            <a className="utility-contact__hotline" href={siteConfig.phoneHref}>
+            <a className="utility-contact__hotline" href={siteConfig.phoneHref} aria-label={`Gọi ${siteConfig.phone}`}>
               <Phone weight="fill" />
               <span>Hotline</span>
               <strong>{siteConfig.phone}</strong>
             </a>
-            <a className="utility-contact__email" href={`mailto:${siteConfig.email}`}>
+            <a className="utility-contact__email" href={`mailto:${siteConfig.email}`} aria-label={`Gửi email đến ${siteConfig.email}`}>
               <EnvelopeSimple weight="bold" />
               <span>Email:</span>
-              {siteConfig.email}
+              <span className="utility-contact__email-address">{siteConfig.email}</span>
             </a>
           </div>
           <nav aria-label="Tiện ích"><Link href="/contact">Về Toàn Tâm</Link><Link href="/#tin-tuc">Tin tức</Link><Link href="/contact">Liên hệ</Link></nav>
