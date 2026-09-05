@@ -47,7 +47,7 @@ export default async function ProductPage({ params }: PageProps<"/products/[hand
       <Breadcrumb
         items={[
           { label: "Trang chủ", href: "/" },
-          { label: "Sản phẩm", href: "/collections/thiet-bi-y-te" },
+          { label: "Sản phẩm", href: "/products" },
           { label: product.title },
         ]}
       />

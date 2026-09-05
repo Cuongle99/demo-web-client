@@ -11,7 +11,7 @@ export function ProductListSection({ products }: { products: Product[] }) {
       <ProductGrid products={products.slice(0, 10)} />
       {products.length > 0 && (
         <div className="home-product-list__more">
-          <Link className="button button--outline" href="/collections">Xem thêm</Link>
+          <Link className="button button--outline" href="/products">Xem thêm</Link>
         </div>
       )}
     </section>

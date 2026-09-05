@@ -26,14 +26,58 @@ export const PRODUCT_FRAGMENT = `#graphql
   }
 `;
 
+export const PRODUCT_CARD_FRAGMENT = `#graphql
+  fragment ProductCardFields on Product {
+    id handle title productType vendor tags
+    featuredImage { url altText width height }
+    variants(first: 1) {
+      nodes {
+        id title sku availableForSale
+        selectedOptions { name value }
+        price { amount currencyCode }
+        compareAtPrice { amount currencyCode }
+      }
+    }
+    collections(first: 10) { nodes { handle title } }
+    seo { title description }
+  }
+`;
+
 export const PRODUCT_BY_HANDLE_QUERY = `#graphql
   ${PRODUCT_FRAGMENT}
   query ProductByHandle($handle: String!) { product(handle: $handle) { ...ProductFields } }
 `;
 
 export const PRODUCTS_QUERY = `#graphql
-  ${PRODUCT_FRAGMENT}
-  query Products($first: Int!, $query: String) { products(first: $first, query: $query, sortKey: RELEVANCE) { nodes { ...ProductFields } } }
+  ${PRODUCT_CARD_FRAGMENT}
+  query Products($first: Int!, $query: String) { products(first: $first, query: $query, sortKey: BEST_SELLING) { nodes { ...ProductCardFields } } }
+`;
+
+export const PRODUCTS_PAGE_QUERY = `#graphql
+  ${PRODUCT_CARD_FRAGMENT}
+  query ProductsPage(
+    $first: Int
+    $last: Int
+    $after: String
+    $before: String
+    $query: String
+    $sortKey: ProductSortKeys!
+    $reverse: Boolean!
+  ) {
+    products(
+      first: $first
+      last: $last
+      after: $after
+      before: $before
+      query: $query
+      sortKey: $sortKey
+      reverse: $reverse
+    ) {
+      nodes { ...ProductCardFields }
+      pageInfo { hasNextPage hasPreviousPage startCursor endCursor }
+    }
+    productTypes(first: 100) { nodes }
+  }
 `;
 
 export const COLLECTION_QUERY = `#graphql

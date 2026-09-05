@@ -10,7 +10,7 @@ export const siteConfig = {
   address: "Số 273, Đ. Lý Thường Kiệt, P.15, Q.11, TP.HCM",
   nav: [
     { label: "Trang chủ", href: "/" },
-    { label: "Sản phẩm", href: "/collections" },
+    { label: "Sản phẩm", href: "/products" },
     { label: "Dịch vụ", href: "/#dich-vu" },
     { label: "Tin tức", href: "/blogs" },
     { label: "Liên hệ", href: "/contact" },
