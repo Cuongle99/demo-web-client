@@ -16,12 +16,12 @@ export async function Header() {
           <div className="utility-contact">
             <a className="utility-contact__hotline" href={siteConfig.phoneHref} aria-label={`Gọi ${siteConfig.phone}`}>
               <Phone weight="fill" />
-              <span>Hotline</span>
+              <span className="utility-contact__label">Hotline</span>
               <strong>{siteConfig.phone}</strong>
             </a>
             <a className="utility-contact__email" href={`mailto:${siteConfig.email}`} aria-label={`Gửi email đến ${siteConfig.email}`}>
               <EnvelopeSimple weight="bold" />
-              <span>Email:</span>
+              <span className="utility-contact__label">Email:</span>
               <span className="utility-contact__email-address">{siteConfig.email}</span>
             </a>
           </div>
