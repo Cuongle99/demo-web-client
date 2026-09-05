@@ -36,18 +36,22 @@ function image(fields: MetaobjectFieldRaw[], key: string): CatalogImage | undefi
 
 export async function getHomepageHeroes(): Promise<HomepageHeroContent[]> {
   if (!hasShopifyConfig()) return [];
-  const data = await shopifyFetch<HomepageHeroPayload>(HOMEPAGE_HERO_QUERY);
-  return data.metaobjects.nodes.map((entry) => ({
-    id: entry.id,
-    handle: entry.handle,
-    heading: value(entry.fields, "heading"),
-    description: value(entry.fields, "description"),
-    desktopImage: image(entry.fields, "desktop_image"),
-    mobileImage: image(entry.fields, "mobile_image"),
-    ctaLabel: value(entry.fields, "cta_label"),
-    ctaLink: value(entry.fields, "cta_link"),
-    enabled: value(entry.fields, "enabled") !== "false",
-  })).filter((entry) => entry.enabled && Boolean(
-    entry.heading || entry.description || entry.desktopImage || entry.mobileImage || (entry.ctaLabel && entry.ctaLink),
-  ));
+  try {
+    const data = await shopifyFetch<HomepageHeroPayload>(HOMEPAGE_HERO_QUERY);
+    return data.metaobjects.nodes.map((entry) => ({
+      id: entry.id,
+      handle: entry.handle,
+      heading: value(entry.fields, "heading"),
+      description: value(entry.fields, "description"),
+      desktopImage: image(entry.fields, "desktop_image"),
+      mobileImage: image(entry.fields, "mobile_image"),
+      ctaLabel: value(entry.fields, "cta_label"),
+      ctaLink: value(entry.fields, "cta_link"),
+      enabled: value(entry.fields, "enabled") !== "false",
+    })).filter((entry) => entry.enabled && Boolean(
+      entry.heading || entry.description || entry.desktopImage || entry.mobileImage || (entry.ctaLabel && entry.ctaLink),
+    ));
+  } catch {
+    return [];
+  }
 }
