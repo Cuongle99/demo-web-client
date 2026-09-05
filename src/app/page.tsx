@@ -4,6 +4,7 @@ import { TrustBand } from "@/components/sections/TrustBand";
 import { FeaturedProducts } from "@/components/sections/FeaturedProducts";
 import { Services } from "@/components/sections/Services";
 import { PromoBanners } from "@/components/sections/PromoBanners";
+import { ProductListSection } from "@/components/sections/ProductListSection";
 import { News } from "@/components/sections/News";
 import { getProducts } from "@/lib/shopify/products";
 import { getCollections } from "@/lib/shopify/collections";
@@ -26,6 +27,7 @@ export default async function Home() {
       <FeaturedProducts products={products} />
       <Services />
       <PromoBanners />
+      <ProductListSection products={products} />
       <News articles={articles} />
     </div>
   );
