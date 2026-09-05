@@ -547,8 +547,7 @@ summary:focus-visible {
 }
 
 .product-card__image img {
-  object-fit: cover;
-  transform: scale(2.4)
+  object-fit: cover
 }
 
 .product-card__content {
