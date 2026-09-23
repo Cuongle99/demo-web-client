@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { EnvelopeSimple, List, MagnifyingGlass, Phone, ShoppingCartSimple } from "@phosphor-icons/react/dist/ssr";
+import { EnvelopeSimple, MagnifyingGlass, Phone, ShoppingCartSimple } from "@phosphor-icons/react/dist/ssr";
 import { siteConfig } from "@/config/site";
 import { Logo } from "./Logo";
 import { MobileNavigation } from "./MobileNavigation";
+import { CatalogMenu } from "./CatalogMenu";
 import { getCollections } from "@/lib/shopify/collections";
 import { categories } from "@/lib/mock-data";
 
@@ -41,12 +42,7 @@ export async function Header() {
       </div>
       <nav className="main-nav" aria-label="Điều hướng chính">
         <div className="container main-nav__inner">
-          <details className="catalog-menu">
-            <summary><List weight="bold" /><span>Danh mục sản phẩm</span></summary>
-            <div className="catalog-menu__panel">
-              {menuCollections.map((collection) => <Link href={`/collections/${collection.handle}`} key={collection.handle}>{collection.title}</Link>)}
-            </div>
-          </details>
+          <CatalogMenu collections={menuCollections} />
           <div className="desktop-nav">{siteConfig.nav.map((item) => <Link key={item.href} href={item.href}>{item.label}</Link>)}</div>
         </div>
       </nav>
