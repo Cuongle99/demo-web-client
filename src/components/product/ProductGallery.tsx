@@ -55,6 +55,7 @@ export function ProductGallery({ product }: { product: Product }) {
   const items = fallbackVideo && !shopifyMedia.some((item) => item.type !== "image") ? [...shopifyMedia, fallbackVideo] : shopifyMedia;
   const [selectedId, setSelectedId] = useState(items[0]?.id);
   const selectedItem = items.find((item) => item.id === selectedId) ?? items[0];
+  const selectedIndex = items.findIndex((item) => item.id === selectedItem?.id);
   const thumbsRef = useRef<HTMLDivElement>(null);
   const [thumbState, setThumbState] = useState({ overflow: false, canGoBack: false, canGoForward: false });
 
@@ -90,6 +91,24 @@ export function ProductGallery({ product }: { product: Product }) {
     viewport?.scrollBy({ left: direction * viewport.clientWidth * .8, behavior: "smooth" });
   };
 
+  const moveSelection = (direction: -1 | 1) => {
+    if (items.length < 2) return;
+    const nextIndex = (selectedIndex + direction + items.length) % items.length;
+    setSelectedId(items[nextIndex].id);
+
+    const viewport = thumbsRef.current;
+    const thumb = viewport?.children[nextIndex];
+    if (!viewport || !thumb) return;
+
+    const viewportRect = viewport.getBoundingClientRect();
+    const thumbRect = thumb.getBoundingClientRect();
+    if (thumbRect.left < viewportRect.left) {
+      viewport.scrollBy({ left: thumbRect.left - viewportRect.left, behavior: "smooth" });
+    } else if (thumbRect.right > viewportRect.right) {
+      viewport.scrollBy({ left: thumbRect.right - viewportRect.right, behavior: "smooth" });
+    }
+  };
+
   if (!selectedItem) {
     return <div className="product-gallery__empty">Chưa có hình ảnh sản phẩm</div>;
   }
@@ -108,6 +127,12 @@ export function ProductGallery({ product }: { product: Product }) {
         )}
         {selectedItem.type === "externalVideo" && (
           <iframe key={selectedItem.id} src={selectedItem.embedUrl} title={selectedItem.altText || `Video ${product.title}`} loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen />
+        )}
+        {items.length > 1 && (
+          <>
+            <button className="product-gallery__main-arrow product-gallery__main-arrow--prev" type="button" aria-label="Xem ảnh hoặc video trước" onClick={() => moveSelection(-1)}><ArrowIcon direction="left" /></button>
+            <button className="product-gallery__main-arrow product-gallery__main-arrow--next" type="button" aria-label="Xem ảnh hoặc video tiếp theo" onClick={() => moveSelection(1)}><ArrowIcon direction="right" /></button>
+          </>
         )}
       </div>
 

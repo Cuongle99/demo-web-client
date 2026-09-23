@@ -1002,6 +1002,43 @@ summary:focus-visible {
   background: #08141b
 }
 
+.product-gallery__main-arrow {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  transform: translateY(-50%);
+  border: 1px solid var(--color-line);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .94);
+  color: var(--color-navy);
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+  transition: background .2s ease, color .2s ease
+}
+
+.product-gallery__main-arrow:hover {
+  background: var(--color-teal);
+  color: #fff
+}
+
+.product-gallery__main-arrow--prev {
+  left: 1rem
+}
+
+.product-gallery__main-arrow--next {
+  right: 1rem
+}
+
+.product-gallery__main-arrow svg {
+  width: 22px;
+  height: 22px
+}
+
 .product-gallery__thumb-carousel {
   margin-top: .75rem
 }
