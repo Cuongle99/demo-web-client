@@ -54,6 +54,7 @@ export function ProductGallery({ product }: { product: Product }) {
   const fallbackVideo = metafieldVideo(product);
   const items = fallbackVideo && !shopifyMedia.some((item) => item.type !== "image") ? [...shopifyMedia, fallbackVideo] : shopifyMedia;
   const [selectedId, setSelectedId] = useState(items[0]?.id);
+  const [transitionDirection, setTransitionDirection] = useState<"next" | "prev">("next");
   const selectedItem = items.find((item) => item.id === selectedId) ?? items[0];
   const selectedIndex = items.findIndex((item) => item.id === selectedItem?.id);
   const thumbsRef = useRef<HTMLDivElement>(null);
@@ -94,6 +95,7 @@ export function ProductGallery({ product }: { product: Product }) {
   const moveSelection = (direction: -1 | 1) => {
     if (items.length < 2) return;
     const nextIndex = (selectedIndex + direction + items.length) % items.length;
+    setTransitionDirection(direction === 1 ? "next" : "prev");
     setSelectedId(items[nextIndex].id);
 
     const viewport = thumbsRef.current;
@@ -116,18 +118,20 @@ export function ProductGallery({ product }: { product: Product }) {
   return (
     <div className="product-gallery">
       <div className={`product-gallery__main product-gallery__main--${selectedItem.type}`}>
-        {selectedItem.type === "image" && (
-          <Image src={selectedItem.image.url} alt={selectedItem.altText || product.title} fill priority sizes="(max-width: 800px) 100vw, 50vw" style={{ objectPosition: selectedItem.image.focalPosition ?? "center" }} />
-        )}
-        {selectedItem.type === "video" && (
-          <video key={selectedItem.id} controls playsInline preload="metadata" poster={selectedItem.previewImage?.url} aria-label={selectedItem.altText || `Video ${product.title}`}>
-            {selectedItem.sources.map((source) => <source key={source.url} src={source.url} type={source.mimeType} />)}
-            Trình duyệt của bạn không hỗ trợ video.
-          </video>
-        )}
-        {selectedItem.type === "externalVideo" && (
-          <iframe key={selectedItem.id} src={selectedItem.embedUrl} title={selectedItem.altText || `Video ${product.title}`} loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen />
-        )}
+        <div key={selectedItem.id} className={`product-gallery__stage product-gallery__stage--${transitionDirection}`}>
+          {selectedItem.type === "image" && (
+            <Image src={selectedItem.image.url} alt={selectedItem.altText || product.title} fill priority sizes="(max-width: 800px) 100vw, 50vw" style={{ objectPosition: selectedItem.image.focalPosition ?? "center" }} />
+          )}
+          {selectedItem.type === "video" && (
+            <video controls playsInline preload="metadata" poster={selectedItem.previewImage?.url} aria-label={selectedItem.altText || `Video ${product.title}`}>
+              {selectedItem.sources.map((source) => <source key={source.url} src={source.url} type={source.mimeType} />)}
+              Trình duyệt của bạn không hỗ trợ video.
+            </video>
+          )}
+          {selectedItem.type === "externalVideo" && (
+            <iframe src={selectedItem.embedUrl} title={selectedItem.altText || `Video ${product.title}`} loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen />
+          )}
+        </div>
         {items.length > 1 && (
           <>
             <button className="product-gallery__main-arrow product-gallery__main-arrow--prev" type="button" aria-label="Xem ảnh hoặc video trước" onClick={() => moveSelection(-1)}><ArrowIcon direction="left" /></button>
@@ -154,7 +158,10 @@ export function ProductGallery({ product }: { product: Product }) {
                   key={item.id}
                   aria-label={`${isVideo ? "Xem video" : `Xem ảnh ${index + 1}`} của ${product.title}`}
                   aria-pressed={isSelected}
-                  onClick={() => setSelectedId(item.id)}
+                  onClick={() => {
+                    setTransitionDirection(index < selectedIndex ? "prev" : "next");
+                    setSelectedId(item.id);
+                  }}
                 >
                   {preview ? <Image src={preview.url} alt={preview.altText || item.altText || product.title} fill sizes="82px" /> : <span className="product-gallery__thumb-placeholder">Video</span>}
                   {isVideo && <span className="product-gallery__play"><PlayIcon /></span>}

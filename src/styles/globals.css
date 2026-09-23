@@ -972,6 +972,35 @@ summary:focus-visible {
   background: #f7fafc
 }
 
+.product-gallery__stage {
+  position: absolute;
+  inset: 0;
+  --gallery-offset: 24px;
+  animation: product-gallery-reveal .32s ease-out both
+}
+
+.product-gallery__stage--prev {
+  --gallery-offset: -24px
+}
+
+@keyframes product-gallery-reveal {
+  from {
+    opacity: .25;
+    transform: translateX(var(--gallery-offset))
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0)
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-gallery__stage {
+    animation: none
+  }
+}
+
 .product-gallery,
 .product-gallery__thumb-carousel,
 .product-gallery__thumbs {
