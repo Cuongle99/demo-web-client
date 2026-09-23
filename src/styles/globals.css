@@ -2785,6 +2785,10 @@ body {
   box-shadow: var(--shadow-sm)
 }
 
+.catalog-controls--collection {
+  grid-template-columns: repeat(5, minmax(0, 1fr))
+}
+
 .catalog-controls label {
   min-width: 0;
   display: grid;

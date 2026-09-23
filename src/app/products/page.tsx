@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, FunnelSimple, MagnifyingGlass } from "@phosphor-icons/react/dist/ssr";
+import { FunnelSimple, MagnifyingGlass } from "@phosphor-icons/react/dist/ssr";
+import { CatalogPagination } from "@/components/product/CatalogPagination";
 import { ProductGrid } from "@/components/product/ProductGrid";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { getProductsPage, type ProductSortKey } from "@/lib/shopify/products";
@@ -44,23 +45,6 @@ function price(value?: string) {
 function positivePage(value?: string) {
   const numeric = Number(value);
   return Number.isInteger(numeric) && numeric > 0 ? numeric : 1;
-}
-
-function paginationItems(currentPage: number, totalPages: number): Array<number | "ellipsis"> {
-  const pages = new Set([1, totalPages]);
-  for (let page = Math.max(2, currentPage - 1); page <= Math.min(totalPages - 1, currentPage + 1); page++) pages.add(page);
-  if (currentPage <= 3) for (let page = 2; page <= Math.min(3, totalPages); page++) pages.add(page);
-  if (currentPage >= totalPages - 2) for (let page = Math.max(2, totalPages - 2); page < totalPages; page++) pages.add(page);
-
-  const sorted = [...pages].sort((a, b) => a - b);
-  const items: Array<number | "ellipsis"> = [];
-  sorted.forEach((page, index) => {
-    const gap = page - (sorted[index - 1] ?? page);
-    if (gap === 2) items.push(page - 1);
-    if (gap > 2) items.push("ellipsis");
-    items.push(page);
-  });
-  return items;
 }
 
 export default async function ProductsPage({ searchParams }: { searchParams: Promise<ProductsSearchParams> }) {
@@ -177,29 +161,7 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
 
       <ProductGrid products={result.products} />
 
-      {result.totalPages > 1 && (
-        <nav className="catalog-pagination" aria-label="Phân trang sản phẩm">
-          {currentPage > 1 ? (
-            <Link className="catalog-pagination__button" href={pageHref(currentPage - 1)} aria-label="Trang trước">
-              <ArrowLeft weight="bold" />
-            </Link>
-          ) : <button className="catalog-pagination__button" type="button" aria-label="Trang trước" disabled><ArrowLeft weight="bold" /></button>}
-          <div className="catalog-pagination__pages">
-            {paginationItems(currentPage, result.totalPages).map((item, index) => item === "ellipsis" ? (
-              <span className="catalog-pagination__ellipsis" key={`ellipsis-${index}`} aria-hidden="true">…</span>
-            ) : item === currentPage ? (
-              <span className="catalog-pagination__button is-active" key={item} aria-current="page" aria-label={`Trang ${item}`}>{item}</span>
-            ) : (
-              <Link className="catalog-pagination__button" href={pageHref(item)} key={item} aria-label={`Trang ${item}`}>{item}</Link>
-            ))}
-          </div>
-          {currentPage < result.totalPages ? (
-            <Link className="catalog-pagination__button" href={pageHref(currentPage + 1)} aria-label="Trang sau">
-              <ArrowRight weight="bold" />
-            </Link>
-          ) : <button className="catalog-pagination__button" type="button" aria-label="Trang sau" disabled><ArrowRight weight="bold" /></button>}
-        </nav>
-      )}
+      <CatalogPagination currentPage={currentPage} totalPages={result.totalPages} pageHref={pageHref} />
     </div>
   );
 }

@@ -99,6 +99,44 @@ export const COLLECTION_QUERY = `#graphql
   }
 `;
 
+export const COLLECTION_CURSOR_QUERY = `#graphql
+  query CollectionCursors(
+    $handle: String!
+    $after: String
+    $filters: [ProductFilter!]
+    $sortKey: ProductCollectionSortKeys!
+    $reverse: Boolean!
+  ) {
+    collection(handle: $handle) {
+      id handle title description seo { title description }
+      products(first: 250, after: $after, filters: $filters, sortKey: $sortKey, reverse: $reverse) {
+        edges { cursor node { productType } }
+        pageInfo { hasNextPage endCursor }
+      }
+    }
+  }
+`;
+
+export const COLLECTION_PAGE_QUERY = `#graphql
+  ${PRODUCT_CARD_FRAGMENT}
+  query CollectionPage(
+    $handle: String!
+    $first: Int!
+    $after: String
+    $filters: [ProductFilter!]
+    $sortKey: ProductCollectionSortKeys!
+    $reverse: Boolean!
+  ) {
+    collection(handle: $handle) {
+      id handle title description seo { title description }
+      products(first: $first, after: $after, filters: $filters, sortKey: $sortKey, reverse: $reverse) {
+        nodes { ...ProductCardFields }
+        pageInfo { hasNextPage endCursor }
+      }
+    }
+  }
+`;
+
 export const COLLECTIONS_QUERY = `#graphql
   query Collections($first: Int!) {
     collections(first: $first, sortKey: UPDATED_AT, reverse: true) {
