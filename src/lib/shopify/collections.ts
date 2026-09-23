@@ -59,8 +59,8 @@ function mockCollectionPage(handle: string, options: CollectionPageOptions): Col
     if (options.productType && product.productType !== options.productType) return false;
     if (options.availability === "available" && !product.variants.some((variant) => variant.availableForSale)) return false;
     if (options.availability === "unavailable" && product.variants.some((variant) => variant.availableForSale)) return false;
-    if (options.minPrice !== undefined && !prices.some((price) => price >= options.minPrice!)) return false;
-    if (options.maxPrice !== undefined && !prices.some((price) => price <= options.maxPrice!)) return false;
+    if ((options.minPrice !== undefined || options.maxPrice !== undefined) &&
+      !prices.some((price) => price >= (options.minPrice ?? 0) && price <= (options.maxPrice ?? Infinity))) return false;
     return true;
   });
   products.sort((a: Product, b: Product) => {
