@@ -46,7 +46,7 @@ export function Hero({ slides }: { slides: HomepageHeroContent[] }) {
         {desktopImage && <Image className="hero__image hero__image--desktop" src={desktopImage.url} alt={desktopImage.altText || slide.heading || ""} fill priority={index === 0} loading={index === 0 ? "eager" : "lazy"} sizes="100vw" />}
         {slide.desktopImage && slide.mobileImage && <Image className="hero__image hero__image--mobile" src={slide.mobileImage.url} alt={slide.mobileImage.altText || slide.heading || ""} fill priority={index === 0} loading={index === 0 ? "eager" : "lazy"} sizes="100vw" />}
         <div className="hero__content">
-          {slide.heading && <h1>{slide.heading}</h1>}
+          {slide.heading && <h2>{slide.heading}</h2>}
           {slide.description && <p className="hero__lead">{slide.description}</p>}
           {slide.ctaLabel && slide.ctaLink && <Button href={slide.ctaLink}>{slide.ctaLabel}</Button>}
         </div>

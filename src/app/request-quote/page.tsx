@@ -1,3 +1,25 @@
-import type { Metadata } from "next"; import { Field, TextareaField } from "@/components/forms/Fields"; import { SubmitForm } from "@/components/forms/SubmitForm"; import { Breadcrumb } from "@/components/ui/Breadcrumb"; import { getProduct } from "@/lib/shopify/products";
-export const metadata: Metadata = { title: "Yêu cầu báo giá", description: "Gửi yêu cầu báo giá thiết bị y tế tới Toàn Tâm Medical.", alternates: { canonical: "/request-quote" } };
-export default async function QuotePage({ searchParams }: PageProps<"/request-quote">) { const params = await searchParams; const handle = typeof params.product === "string" ? params.product : ""; const variantId = typeof params.variant === "string" ? params.variant : ""; const product = handle ? await getProduct(handle) : null; const variant = product?.variants.find((item) => item.id === variantId) ?? product?.variants[0]; const productTitle = product && variant && product.variants.length > 1 ? `${product.title} — ${variant.title}` : product?.title; return <div className="inner-page container"><Breadcrumb items={[{ label: "Trang chủ", href: "/" }, { label: "Yêu cầu báo giá" }]} /><div className="form-layout"><div><p className="eyebrow">Tư vấn chuyên sâu</p><h1>Yêu cầu báo giá</h1><p>Cho chúng tôi biết nhu cầu của bạn. Chuyên viên thiết bị y tế sẽ tư vấn cấu hình và báo giá phù hợp.</p>{product && <div className="selected-product"><small>Sản phẩm đã chọn</small><strong>{product.title}</strong>{variant && product.variants.length > 1 && <span>Phiên bản: {variant.title}</span>}<span>SKU: {variant?.sku || "Đang cập nhật"}</span></div>}</div><SubmitForm endpoint="/api/request-quote" successMessage="Yêu cầu báo giá đã được gửi. Chuyên viên của chúng tôi sẽ sớm liên hệ."><input type="hidden" name="productId" value={product?.id || ""} /><input type="hidden" name="productHandle" value={product?.handle || ""} /><input type="hidden" name="productSku" value={variant?.sku || ""} /><div className="form-grid"><Field label="Họ và tên" name="name" required /><Field label="Công ty" name="company" /><Field label="Email" name="email" type="email" required /><Field label="Điện thoại" name="phone" type="tel" required /><Field label="Sản phẩm" name="productTitle" defaultValue={productTitle || "Tư vấn sản phẩm phù hợp"} readOnly={Boolean(product)} required /><TextareaField label="Nhu cầu / Ghi chú" name="message" required placeholder="Số lượng, mục đích sử dụng hoặc yêu cầu kỹ thuật..." /></div></SubmitForm></div></div>; }
+import type { Metadata } from "next";
+import { Field, TextareaField } from "@/components/forms/Fields";
+import { SubmitForm } from "@/components/forms/SubmitForm";
+import { Breadcrumb } from "@/components/ui/Breadcrumb";
+import { getProduct } from "@/lib/shopify/products";
+import { getSeoPage } from "@/lib/shopify/seo-content";
+import { DEFAULT_SOCIAL_IMAGE } from "@/lib/seo";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const seo = await getSeoPage("/request-quote");
+  const title = seo?.title || "Yêu cầu báo giá";
+  const description = seo?.description || "Gửi yêu cầu báo giá thiết bị y tế tới Toàn Tâm Medical cho nhu cầu gia đình, phòng khám và bệnh viện.";
+  return { title, description, alternates: { canonical: "/request-quote" },
+    openGraph: { title, description, images: [seo?.socialImage?.url || DEFAULT_SOCIAL_IMAGE] } };
+}
+
+export default async function QuotePage({ searchParams }: PageProps<"/request-quote">) {
+  const [params, seo] = await Promise.all([searchParams, getSeoPage("/request-quote")]);
+  const handle = typeof params.product === "string" ? params.product : "";
+  const variantId = typeof params.variant === "string" ? params.variant : "";
+  const product = handle ? await getProduct(handle) : null;
+  const variant = product?.variants.find((item) => item.id === variantId) ?? product?.variants[0];
+  const productTitle = product && variant && product.variants.length > 1 ? `${product.title} — ${variant.title}` : product?.title;
+  return <div className="inner-page container"><Breadcrumb items={[{ label: "Trang chủ", href: "/" }, { label: "Yêu cầu báo giá" }]} /><div className="form-layout"><div><p className="eyebrow">Tư vấn chuyên sâu</p><h1>{seo?.heading || "Yêu cầu báo giá"}</h1><p>{seo?.intro || "Cho chúng tôi biết nhu cầu của bạn. Chuyên viên thiết bị y tế sẽ tư vấn cấu hình và báo giá phù hợp."}</p>{product && <div className="selected-product"><small>Sản phẩm đã chọn</small><strong>{product.title}</strong>{variant && product.variants.length > 1 && <span>Phiên bản: {variant.title}</span>}<span>SKU: {variant?.sku || "Đang cập nhật"}</span></div>}</div><SubmitForm endpoint="/api/request-quote" successMessage="Yêu cầu báo giá đã được gửi. Chuyên viên của chúng tôi sẽ sớm liên hệ."><input type="hidden" name="productId" value={product?.id || ""} /><input type="hidden" name="productHandle" value={product?.handle || ""} /><input type="hidden" name="productSku" value={variant?.sku || ""} /><div className="form-grid"><Field label="Họ và tên" name="name" required /><Field label="Công ty" name="company" /><Field label="Email" name="email" type="email" required /><Field label="Điện thoại" name="phone" type="tel" required /><Field label="Sản phẩm" name="productTitle" defaultValue={productTitle || "Tư vấn sản phẩm phù hợp"} readOnly={Boolean(product)} required /><TextareaField label="Nhu cầu / Ghi chú" name="message" required placeholder="Số lượng, mục đích sử dụng hoặc yêu cầu kỹ thuật..." /></div></SubmitForm></div></div>;
+}

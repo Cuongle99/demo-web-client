@@ -39,7 +39,7 @@ function stockStatus(variant?: ProductVariant) {
   return { label: "Còn hàng", className: "is-available" };
 }
 
-export function ProductInfo({ product }: { product: Product }) {
+export function ProductInfo({ product, heading }: { product: Product; heading?: string }) {
   const initialVariant = product.variants.find((variant) => variant.availableForSale) ?? product.variants[0];
   const [selectedVariantId, setSelectedVariantId] = useState(initialVariant?.id ?? "");
   const selectedVariant = product.variants.find((variant) => variant.id === selectedVariantId) ?? initialVariant;
@@ -93,7 +93,7 @@ export function ProductInfo({ product }: { product: Product }) {
   return (
     <div className="product-info">
       <p className="eyebrow">{product.productType || "Thiết bị y tế"}</p>
-      <h1>{product.title}</h1>
+      <h1>{heading || product.title}</h1>
       <div className="product-info__meta">
         <span>SKU: <strong>{selectedVariant?.sku || "Đang cập nhật"}</strong></span>
         <span>Thương hiệu: <strong>{product.vendor || "Toàn Tâm"}</strong></span>

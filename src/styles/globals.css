@@ -361,7 +361,7 @@ summary:focus-visible {
   padding: 53px 0 0 82px
 }
 
-.hero h1 {
+.hero h2 {
   font-size: var(--font-hero);
   text-transform: uppercase;
   letter-spacing: -.035em;
@@ -1652,7 +1652,7 @@ summary:focus-visible {
     padding: 2.4rem 1.2rem 1.5rem
   }
 
-  .hero h1 {
+  .hero h2 {
     max-width: 330px
   }
 
@@ -2239,7 +2239,7 @@ summary:focus-visible {
     padding-top: 48px
   }
 
-  .hero h1 {
+  .hero h2 {
     font-size: 2.55rem;
     white-space: nowrap
   }
@@ -3215,7 +3215,7 @@ body {
     padding: clamp(1rem, 6vw, 1.5rem) 1rem 1rem
   }
 
-  .hero h1 {
+  .hero h2 {
     max-width: none;
     margin: 0 0 .35rem;
     font-size: clamp(1.25rem, 6.2vw, 1.7rem);
@@ -3466,6 +3466,86 @@ body {
   .form-card {
     padding: 1rem
   }
+}
+
+.home-intro {
+  margin-top: clamp(1.25rem, 2.5vw, 2rem);
+  padding: clamp(1.25rem, 2.5vw, 2rem);
+  border: 1px solid var(--color-line);
+  border-radius: 14px;
+  background: #f5fbfd;
+}
+
+.home-intro h1 {
+  max-width: 900px;
+  margin: .25rem 0 .5rem;
+  font-size: clamp(1.55rem, 2.5vw, 2.4rem);
+}
+
+.home-intro > p:last-child {
+  max-width: 900px;
+  margin: 0;
+  color: #43586a;
+  font-size: clamp(.95rem, 1.3vw, 1.05rem);
+}
+
+.article-page__intro {
+  margin: 1.5rem 0;
+  color: #355269;
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+.product-seo-intro {
+  margin-top: 2rem;
+  color: #355269;
+  line-height: 1.7;
+}
+
+.product-sources {
+  margin-top: 2rem;
+  padding: 1.25rem;
+  border: 1px solid var(--color-line);
+  border-radius: 12px;
+  background: #f5fbfd;
+}
+
+.product-sources h2 {
+  margin: 0 0 .75rem;
+  font-size: 1.2rem;
+}
+
+.product-sources ul {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.article-page__reviewer {
+  margin-top: .75rem;
+  color: #516677;
+  font-size: .9rem;
+}
+
+.article-page__note,
+.article-page__sources,
+.article-page__related {
+  margin-top: 2rem;
+  padding: 1.25rem;
+  border: 1px solid var(--color-line);
+  border-radius: 12px;
+  background: #f5fbfd;
+}
+
+.article-page__sources h2,
+.article-page__related h2 {
+  margin: 0 0 .75rem;
+  font-size: 1.2rem;
+}
+
+.article-page__sources ul,
+.article-page__related ul {
+  margin: 0;
+  padding-left: 1.25rem;
 }
 
 @media(max-width:480px) {

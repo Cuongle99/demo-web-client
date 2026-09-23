@@ -1,16 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { FunnelSimple, MagnifyingGlass } from "@phosphor-icons/react/dist/ssr";
 import { CatalogPagination } from "@/components/product/CatalogPagination";
 import { ProductGrid } from "@/components/product/ProductGrid";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { getProductsPage, type ProductSortKey } from "@/lib/shopify/products";
+import { getSeoPage } from "@/lib/shopify/seo-content";
+import { DEFAULT_SOCIAL_IMAGE } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Tất cả sản phẩm",
-  description: "Tìm kiếm, lọc và sắp xếp toàn bộ sản phẩm thiết bị y tế tại Toàn Tâm Medical.",
-  alternates: { canonical: "/products" },
-};
+const FALLBACK_DESCRIPTION = "Tìm kiếm, lọc và sắp xếp sản phẩm thiết bị y tế cho gia đình, bệnh viện và phòng khám tại Toàn Tâm Medical.";
 
 type ProductsSearchParams = {
   q?: string;
@@ -47,6 +46,22 @@ function positivePage(value?: string) {
   return Number.isInteger(numeric) && numeric > 0 ? numeric : 1;
 }
 
+export async function generateMetadata({ searchParams }: { searchParams: Promise<ProductsSearchParams> }): Promise<Metadata> {
+  const [params, seo] = await Promise.all([searchParams, getSeoPage("/products")]);
+  const page = positivePage(params.page);
+  const filtered = Boolean(clean(params.q) || clean(params.type) || clean(params.availability) ||
+    clean(params.minPrice) || clean(params.maxPrice) || clean(params.sort));
+  const title = seo?.title || "Tất cả sản phẩm";
+  const description = seo?.description || FALLBACK_DESCRIPTION;
+  return {
+    title: !filtered && page > 1 ? `${title} - Trang ${page}` : title,
+    description,
+    alternates: { canonical: !filtered && page > 1 ? `/products?page=${page}` : "/products" },
+    robots: filtered ? { index: false, follow: true } : undefined,
+    openGraph: { title, description, images: [seo?.socialImage?.url || DEFAULT_SOCIAL_IMAGE] },
+  };
+}
+
 export default async function ProductsPage({ searchParams }: { searchParams: Promise<ProductsSearchParams> }) {
   const params = await searchParams;
   const search = clean(params.q);
@@ -59,7 +74,7 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
   const selectedSort = sortOptions.find((option) => option.value === params.sort) ?? sortOptions[0];
   const requestedPage = positivePage(params.page);
 
-  const result = await getProductsPage({
+  const [result, seo] = await Promise.all([getProductsPage({
     pageSize: PAGE_SIZE,
     page: requestedPage,
     search,
@@ -69,7 +84,8 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
     maxPrice,
     sortKey: selectedSort.sortKey,
     reverse: selectedSort.reverse,
-  });
+  }), getSeoPage("/products")]);
+  if (requestedPage > result.totalPages) notFound();
   const currentPage = result.currentPage;
 
   const hasFilters = Boolean(search || productType || availability || minPrice !== undefined || maxPrice !== undefined);
@@ -98,8 +114,8 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
       <header className="product-catalog__header">
         <div>
           <p className="eyebrow">Danh sách sản phẩm</p>
-          <h1>Tất cả sản phẩm</h1>
-          <p>Tìm sản phẩm phù hợp theo nhu cầu, tình trạng hàng và khoảng giá.</p>
+          <h1>{seo?.heading || "Tất cả sản phẩm"}</h1>
+          <p>{seo?.intro || "Tìm sản phẩm phù hợp theo nhu cầu, tình trạng hàng và khoảng giá."}</p>
         </div>
       </header>
 

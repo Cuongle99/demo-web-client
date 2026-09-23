@@ -5,16 +5,20 @@ import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
 import { CollectionIcon } from "@/components/collection/CollectionIcon";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { getCollections } from "@/lib/shopify/collections";
+import { getSeoPage } from "@/lib/shopify/seo-content";
+import { DEFAULT_SOCIAL_IMAGE } from "@/lib/seo";
 import { categories } from "@/lib/mock-data";
 
-export const metadata: Metadata = {
-  title: "Danh mục sản phẩm",
-  description: "Khám phá các danh mục sản phẩm được quản lý trực tiếp trên Shopify.",
-  alternates: { canonical: "/collections" },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const seo = await getSeoPage("/collections");
+  const title = seo?.title || "Danh mục sản phẩm";
+  const description = seo?.description || "Khám phá các danh mục thiết bị chăm sóc sức khỏe và hỗ trợ phục hồi chức năng tại Toàn Tâm Medical.";
+  return { title, description, alternates: { canonical: "/collections" },
+    openGraph: { title, description, images: [seo?.socialImage?.url || DEFAULT_SOCIAL_IMAGE] } };
+}
 
 export default async function CollectionsPage() {
-  const collections = await getCollections(50);
+  const [collections, seo] = await Promise.all([getCollections(50), getSeoPage("/collections")]);
   const displayCollections = collections.length
     ? collections
     : categories.map((category) => ({
@@ -33,9 +37,9 @@ export default async function CollectionsPage() {
       <header className="collections-hero">
         <div>
           <p className="eyebrow">Danh mục sản phẩm</p>
-          <h1>Chọn sản phẩm theo nhu cầu</h1>
+          <h1>{seo?.heading || "Chọn sản phẩm theo nhu cầu"}</h1>
           <p className="collections-hero__lead">
-            Khám phá các nhóm sản phẩm chăm sóc sức khỏe, phục hồi chức năng và tiện ích gia đình đang có tại Toàn Tâm.
+            {seo?.intro || "Khám phá các nhóm sản phẩm chăm sóc sức khỏe, phục hồi chức năng và tiện ích gia đình đang có tại Toàn Tâm."}
           </p>
         </div>
         <div className="collections-hero__summary" aria-label={`${displayCollections.length} danh mục đang hiển thị`}>

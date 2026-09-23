@@ -52,7 +52,7 @@ function collectionFilters(options: CollectionPageOptions) {
 }
 
 function mockCollectionPage(handle: string, options: CollectionPageOptions): CollectionPageResult | null {
-  if (!handle) return null;
+  if (handle !== mockCollection.handle) return null;
   const pageSize = options.pageSize ?? 12;
   const products = mockCollection.products.filter((product) => {
     const prices = product.variants.map((variant) => Number(variant.price.amount));
@@ -83,7 +83,7 @@ function mockCollectionPage(handle: string, options: CollectionPageOptions): Col
 }
 
 export async function getCollection(handle: string, first = 24, after?: string): Promise<Collection | null> {
-  if (!hasShopifyConfig()) return handle ? { ...mockCollection, handle } : null;
+  if (!hasShopifyConfig()) return handle === mockCollection.handle ? mockCollection : null;
   const data = await shopifyFetch<CollectionPayload>(COLLECTION_QUERY, { handle, first, after: after ?? null });
   return data.collection ? normalizeCollection(data.collection) : null;
 }
