@@ -1287,7 +1287,6 @@ summary:focus-visible {
 
 .product-description>div {
   color: var(--color-muted);
-  max-width: 760px
 }
 
 .product-specs dl {
