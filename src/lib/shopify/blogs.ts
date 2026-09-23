@@ -36,11 +36,7 @@ export async function getBlogArticles(first = 4): Promise<BlogArticle[]> {
 
 export async function getArticle(blogHandle: string, articleHandle: string): Promise<BlogArticle | null> {
   if (!hasShopifyConfig()) return null;
-  try {
-    const data = await shopifyFetch<ArticlePayload>(ARTICLE_QUERY, { blogHandle, articleHandle });
-    if (!data.blog?.articleByHandle) return null;
-    return normalizeArticle(data.blog.articleByHandle, data.blog);
-  } catch {
-    return null;
-  }
+  const data = await shopifyFetch<ArticlePayload>(ARTICLE_QUERY, { blogHandle, articleHandle });
+  if (!data.blog?.articleByHandle) return null;
+  return normalizeArticle(data.blog.articleByHandle, data.blog);
 }
