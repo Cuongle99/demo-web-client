@@ -18,10 +18,10 @@ type ProductsSearchParams = {
   minPrice?: string;
   maxPrice?: string;
   sort?: string;
-  after?: string;
-  before?: string;
   page?: string;
 };
+
+const PAGE_SIZE = 12;
 
 const sortOptions: Array<{ value: string; label: string; sortKey: ProductSortKey; reverse: boolean }> = [
   { value: "best-selling", label: "Bán chạy nhất", sortKey: "BEST_SELLING", reverse: false },
@@ -46,6 +46,23 @@ function positivePage(value?: string) {
   return Number.isInteger(numeric) && numeric > 0 ? numeric : 1;
 }
 
+function paginationItems(currentPage: number, totalPages: number): Array<number | "ellipsis"> {
+  const pages = new Set([1, totalPages]);
+  for (let page = Math.max(2, currentPage - 1); page <= Math.min(totalPages - 1, currentPage + 1); page++) pages.add(page);
+  if (currentPage <= 3) for (let page = 2; page <= Math.min(3, totalPages); page++) pages.add(page);
+  if (currentPage >= totalPages - 2) for (let page = Math.max(2, totalPages - 2); page < totalPages; page++) pages.add(page);
+
+  const sorted = [...pages].sort((a, b) => a - b);
+  const items: Array<number | "ellipsis"> = [];
+  sorted.forEach((page, index) => {
+    const gap = page - (sorted[index - 1] ?? page);
+    if (gap === 2) items.push(page - 1);
+    if (gap > 2) items.push("ellipsis");
+    items.push(page);
+  });
+  return items;
+}
+
 export default async function ProductsPage({ searchParams }: { searchParams: Promise<ProductsSearchParams> }) {
   const params = await searchParams;
   const search = clean(params.q);
@@ -56,12 +73,11 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
   const minPrice = price(params.minPrice);
   const maxPrice = price(params.maxPrice);
   const selectedSort = sortOptions.find((option) => option.value === params.sort) ?? sortOptions[0];
-  const currentPage = positivePage(params.page);
+  const requestedPage = positivePage(params.page);
 
   const result = await getProductsPage({
-    pageSize: 8,
-    after: clean(params.after) || undefined,
-    before: clean(params.before) || undefined,
+    pageSize: PAGE_SIZE,
+    page: requestedPage,
     search,
     productType,
     availability,
@@ -70,6 +86,7 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
     sortKey: selectedSort.sortKey,
     reverse: selectedSort.reverse,
   });
+  const currentPage = result.currentPage;
 
   const hasFilters = Boolean(search || productType || availability || minPrice !== undefined || maxPrice !== undefined);
   const sharedParams = new URLSearchParams();
@@ -80,12 +97,15 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
   if (maxPrice !== undefined) sharedParams.set("maxPrice", String(maxPrice));
   if (selectedSort.value !== sortOptions[0].value) sharedParams.set("sort", selectedSort.value);
 
-  function pageHref(direction: "previous" | "next", cursor: string) {
+  function pageHref(page: number) {
     const nextParams = new URLSearchParams(sharedParams);
-    nextParams.set(direction === "next" ? "after" : "before", cursor);
-    nextParams.set("page", String(direction === "next" ? currentPage + 1 : Math.max(1, currentPage - 1)));
-    return `/products?${nextParams.toString()}`;
+    if (page > 1) nextParams.set("page", String(page));
+    const query = nextParams.toString();
+    return `/products${query ? `?${query}` : ""}#product-results`;
   }
+
+  const firstProduct = result.totalCount ? (currentPage - 1) * PAGE_SIZE + 1 : 0;
+  const lastProduct = firstProduct ? firstProduct + result.products.length - 1 : 0;
 
   return (
     <div className="inner-page container product-catalog">
@@ -150,26 +170,34 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
         </div>
       </form>
 
-      <div className="catalog-results__heading">
+      <div className="catalog-results__heading" id="product-results">
         <h2>{hasFilters ? "Sản phẩm phù hợp" : "Danh sách sản phẩm"}</h2>
-        <span>{result.products.length} sản phẩm · Trang {currentPage}</span>
+        <span>{result.totalCount ? `Hiển thị ${firstProduct}–${lastProduct} / ${result.totalCount} sản phẩm` : "0 sản phẩm"}</span>
       </div>
 
       <ProductGrid products={result.products} />
 
-      {(result.pageInfo.hasPreviousPage || result.pageInfo.hasNextPage) && (
+      {result.totalPages > 1 && (
         <nav className="catalog-pagination" aria-label="Phân trang sản phẩm">
-          {result.pageInfo.hasPreviousPage && result.pageInfo.startCursor ? (
-            <Link className="button button--outline" href={pageHref("previous", result.pageInfo.startCursor)}>
-              <ArrowLeft weight="bold" /> Trang trước
+          {currentPage > 1 ? (
+            <Link className="catalog-pagination__button" href={pageHref(currentPage - 1)} aria-label="Trang trước">
+              <ArrowLeft weight="bold" />
             </Link>
-          ) : <span />}
-          <strong>Trang {currentPage}</strong>
-          {result.pageInfo.hasNextPage && result.pageInfo.endCursor ? (
-            <Link className="button button--outline" href={pageHref("next", result.pageInfo.endCursor)}>
-              Trang sau <ArrowRight weight="bold" />
+          ) : <button className="catalog-pagination__button" type="button" aria-label="Trang trước" disabled><ArrowLeft weight="bold" /></button>}
+          <div className="catalog-pagination__pages">
+            {paginationItems(currentPage, result.totalPages).map((item, index) => item === "ellipsis" ? (
+              <span className="catalog-pagination__ellipsis" key={`ellipsis-${index}`} aria-hidden="true">…</span>
+            ) : item === currentPage ? (
+              <span className="catalog-pagination__button is-active" key={item} aria-current="page" aria-label={`Trang ${item}`}>{item}</span>
+            ) : (
+              <Link className="catalog-pagination__button" href={pageHref(item)} key={item} aria-label={`Trang ${item}`}>{item}</Link>
+            ))}
+          </div>
+          {currentPage < result.totalPages ? (
+            <Link className="catalog-pagination__button" href={pageHref(currentPage + 1)} aria-label="Trang sau">
+              <ArrowRight weight="bold" />
             </Link>
-          ) : <span />}
+          ) : <button className="catalog-pagination__button" type="button" aria-label="Trang sau" disabled><ArrowRight weight="bold" /></button>}
         </nav>
       )}
     </div>

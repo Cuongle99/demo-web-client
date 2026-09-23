@@ -56,27 +56,36 @@ export const PRODUCTS_QUERY = `#graphql
 export const PRODUCTS_PAGE_QUERY = `#graphql
   ${PRODUCT_CARD_FRAGMENT}
   query ProductsPage(
-    $first: Int
-    $last: Int
+    $first: Int!
     $after: String
-    $before: String
     $query: String
     $sortKey: ProductSortKeys!
     $reverse: Boolean!
   ) {
     products(
       first: $first
-      last: $last
       after: $after
-      before: $before
       query: $query
       sortKey: $sortKey
       reverse: $reverse
     ) {
       nodes { ...ProductCardFields }
-      pageInfo { hasNextPage hasPreviousPage startCursor endCursor }
     }
     productTypes(first: 100) { nodes }
+  }
+`;
+
+export const PRODUCTS_CURSOR_QUERY = `#graphql
+  query ProductCursors(
+    $after: String
+    $query: String
+    $sortKey: ProductSortKeys!
+    $reverse: Boolean!
+  ) {
+    products(first: 250, after: $after, query: $query, sortKey: $sortKey, reverse: $reverse) {
+      edges { cursor }
+      pageInfo { hasNextPage endCursor }
+    }
   }
 `;
 

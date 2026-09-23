@@ -2853,7 +2853,8 @@ body {
   align-items: end;
   justify-content: space-between;
   gap: 1rem;
-  margin-bottom: 1rem
+  margin-bottom: 1rem;
+  scroll-margin-top: 1.5rem
 }
 
 .catalog-results__heading h2 {
@@ -2870,24 +2871,68 @@ body {
 }
 
 .catalog-pagination {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  display: flex;
+  justify-content: center;
   align-items: center;
-  gap: 1rem;
-  margin-top: 2.25rem
+  gap: .5rem;
+  margin-top: 2.5rem;
+  padding-bottom: .5rem
 }
 
-.catalog-pagination>a:first-child {
-  justify-self: start
+.catalog-pagination__pages {
+  display: flex;
+  align-items: center;
+  gap: .5rem
 }
 
-.catalog-pagination>a:last-child {
-  justify-self: end
-}
-
-.catalog-pagination strong {
+.catalog-pagination__button {
+  flex: 0 0 auto;
+  min-width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 .7rem;
+  border: 1px solid #cbdde8;
+  border-radius: 9px;
+  background: #fff;
   color: var(--color-navy);
-  font-size: .82rem
+  font: inherit;
+  font-size: .85rem;
+  font-weight: 800;
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color .2s ease, background .2s ease, color .2s ease
+}
+
+.catalog-pagination__button svg {
+  width: 18px;
+  height: 18px
+}
+
+.catalog-pagination__button:hover:not(:disabled):not(.is-active) {
+  border-color: var(--color-teal);
+  background: var(--color-cyan);
+  color: var(--color-teal-dark)
+}
+
+.catalog-pagination__button.is-active {
+  border-color: var(--color-teal);
+  background: var(--color-teal);
+  color: #fff;
+  cursor: default
+}
+
+.catalog-pagination__button:disabled {
+  opacity: .42;
+  cursor: not-allowed
+}
+
+.catalog-pagination__ellipsis {
+  min-width: 24px;
+  color: var(--color-muted);
+  font-weight: 800;
+  text-align: center
 }
 
 @media(max-width:1100px) {
@@ -2937,13 +2982,18 @@ body {
   }
 
   .catalog-pagination {
-    gap: .5rem
+    justify-content: flex-start;
+    gap: .35rem;
+    overflow-x: auto;
+    scrollbar-width: none
   }
 
-  .catalog-pagination .button {
-    min-width: 0;
-    padding-inline: .7rem;
-    font-size: .68rem
+  .catalog-pagination::-webkit-scrollbar {
+    display: none
+  }
+
+  .catalog-pagination__pages {
+    gap: .35rem
   }
 }
 
