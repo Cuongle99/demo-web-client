@@ -41,7 +41,7 @@ export function MobileNavigation() {
     <button className="mobile-nav__backdrop" type="button" aria-label="Đóng menu" tabIndex={open ? 0 : -1} onClick={close} />
     <aside id="mobile-drawer" className="mobile-nav__drawer" aria-label="Menu chính" aria-modal="true" role="dialog" aria-hidden={!open}>
       <div className="mobile-nav__header">
-        <Image src="/assets/logo-header.png" alt="Toàn Tâm Medical" width={150} height={45} />
+        <Image src="/assets/logo-toan-tam.png" alt="Toàn Tâm Medical" width={150} height={50} />
         <button ref={closeRef} type="button" aria-label="Đóng menu" onClick={close}><X weight="bold" /></button>
       </div>
       <nav aria-label="Điều hướng mobile">
