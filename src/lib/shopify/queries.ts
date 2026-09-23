@@ -20,7 +20,8 @@ export const PRODUCT_FRAGMENT = `#graphql
       {namespace: "custom", key: "technical_document"}, {namespace: "custom", key: "brochure"},
       {namespace: "custom", key: "video_url"}, {namespace: "custom", key: "youtube_url"},
       {namespace: "custom", key: "featured"}, {namespace: "custom", key: "short_description"},
-      {namespace: "custom", key: "application"}, {namespace: "custom", key: "certification"}
+      {namespace: "custom", key: "application"}, {namespace: "custom", key: "certification"},
+      {namespace: "custom", key: "seo_references"}, {namespace: "custom", key: "technical_specs"}
     ]) { namespace key value type }
     seo { title description }
   }
@@ -93,7 +94,7 @@ export const COLLECTION_QUERY = `#graphql
   ${PRODUCT_FRAGMENT}
   query Collection($handle: String!, $first: Int!, $after: String) {
     collection(handle: $handle) {
-      id handle title description seo { title description }
+      id handle title description image { url altText width height } seo { title description }
       products(first: $first, after: $after) { nodes { ...ProductFields } pageInfo { hasNextPage endCursor } }
     }
   }
@@ -128,7 +129,7 @@ export const COLLECTION_PAGE_QUERY = `#graphql
     $reverse: Boolean!
   ) {
     collection(handle: $handle) {
-      id handle title description seo { title description }
+      id handle title description image { url altText width height } seo { title description }
       products(first: $first, after: $after, filters: $filters, sortKey: $sortKey, reverse: $reverse) {
         nodes { ...ProductCardFields }
         pageInfo { hasNextPage endCursor }
@@ -176,6 +177,11 @@ export const ARTICLE_QUERY = `#graphql
         image { url altText width height }
         authorV2 { name }
         seo { title description }
+        seoReferences: metafield(namespace: "custom", key: "seo_references") { value }
+        seoRelatedLinks: metafield(namespace: "custom", key: "seo_related_links") { value }
+        medicalReviewer: metafield(namespace: "custom", key: "medical_reviewer") { value }
+        reviewerRole: metafield(namespace: "custom", key: "reviewer_role") { value }
+        reviewDate: metafield(namespace: "custom", key: "review_date") { value }
       }
     }
   }

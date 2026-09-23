@@ -65,6 +65,7 @@ export interface Collection {
   handle: string;
   title: string;
   description: string;
+  image?: CatalogImage;
   seo: { title?: string; description?: string };
   products: Product[];
   pageInfo?: { hasNextPage: boolean; endCursor?: string };
@@ -92,6 +93,11 @@ export interface BlogArticle {
   author?: string;
   tags: string[];
   seo: { title?: string; description?: string };
+  references: Array<{ label: string; url: string }>;
+  relatedLinks: Array<{ label: string; href: string }>;
+  reviewerName?: string;
+  reviewerRole?: string;
+  reviewedAt?: string;
 }
 
 export interface QuoteRequest {

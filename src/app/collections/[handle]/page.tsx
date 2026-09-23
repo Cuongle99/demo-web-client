@@ -6,7 +6,6 @@ import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { CatalogPagination } from "@/components/product/CatalogPagination";
 import { ProductGrid } from "@/components/product/ProductGrid";
 import { getCollection, getCollectionPage, type CollectionSortKey } from "@/lib/shopify/collections";
-import { getSeoPage } from "@/lib/shopify/seo-content";
 import { breadcrumbSchema, DEFAULT_SOCIAL_IMAGE, jsonLdString } from "@/lib/seo";
 
 const PAGE_SIZE = 12;
@@ -38,15 +37,14 @@ function positivePage(value: string) {
 export async function generateMetadata({ params, searchParams }: PageProps<"/collections/[handle]">): Promise<Metadata> {
   const [{ handle }, query] = await Promise.all([params, searchParams]);
   const decodedHandle = decodeURIComponent(handle);
-  const path = `/collections/${decodedHandle}`;
-  const [collection, seo] = await Promise.all([getCollection(decodedHandle, 1), getSeoPage(path)]);
+  const collection = await getCollection(decodedHandle, 1);
 
   if (!collection) notFound();
   const page = positivePage(single(query.page));
   const filtered = Boolean(single(query.type) || single(query.availability) || single(query.minPrice) ||
     single(query.maxPrice) || single(query.sort));
-  const title = seo?.title || collection.seo.title || collection.title;
-  const description = seo?.description || collection.seo.description || collection.description ||
+  const title = collection.seo.title || collection.title;
+  const description = collection.seo.description || collection.description ||
     `Khám phá sản phẩm trong danh mục ${collection.title} tại Toàn Tâm Medical. Xem đặc điểm, giá và nhận tư vấn lựa chọn phù hợp.`;
   const canonicalPath = `/collections/${encodeURIComponent(collection.handle)}`;
   return {
@@ -54,7 +52,7 @@ export async function generateMetadata({ params, searchParams }: PageProps<"/col
     description,
     alternates: { canonical: !filtered && page > 1 ? `${canonicalPath}?page=${page}` : canonicalPath },
     robots: filtered ? { index: false, follow: true } : undefined,
-    openGraph: { title, description, images: [seo?.socialImage?.url || DEFAULT_SOCIAL_IMAGE] },
+    openGraph: { title, description, images: [collection.image?.url || DEFAULT_SOCIAL_IMAGE] },
   };
 }
 
@@ -69,7 +67,7 @@ export default async function CollectionPage({ params, searchParams }: PageProps
   const requestedPage = positivePage(single(paramsQuery.page));
 
   const decodedHandle = decodeURIComponent(handle);
-  const [result, seo] = await Promise.all([getCollectionPage(decodedHandle, {
+  const result = await getCollectionPage(decodedHandle, {
     pageSize: PAGE_SIZE,
     page: requestedPage,
     productType,
@@ -78,7 +76,7 @@ export default async function CollectionPage({ params, searchParams }: PageProps
     maxPrice,
     sortKey: selectedSort.sortKey,
     reverse: selectedSort.reverse,
-  }), getSeoPage(`/collections/${decodedHandle}`)]);
+  });
   if (!result) notFound();
   if (requestedPage > result.totalPages) notFound();
 
@@ -107,8 +105,8 @@ export default async function CollectionPage({ params, searchParams }: PageProps
       <Breadcrumb items={[{ label: "Trang chủ", href: "/" }, { label: "Danh mục" }, { label: collection.title }]} />
       <header className="collection-header">
         <p className="eyebrow">Danh mục sản phẩm</p>
-        <h1>{seo?.heading || collection.title}</h1>
-        <p>{seo?.intro || collection.description || `Khám phá các sản phẩm ${collection.title.toLocaleLowerCase("vi-VN")} và lựa chọn theo nhu cầu sử dụng.`}</p>
+        <h1>{collection.title}</h1>
+        <p>{collection.description || `Khám phá các sản phẩm ${collection.title.toLocaleLowerCase("vi-VN")} và lựa chọn theo nhu cầu sử dụng.`}</p>
       </header>
 
       <form className="catalog-controls catalog-controls--collection" action={collectionPath} method="get" aria-label="Lọc và sắp xếp sản phẩm trong danh mục">

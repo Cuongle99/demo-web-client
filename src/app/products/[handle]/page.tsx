@@ -8,15 +8,15 @@ import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { HorizontalCarousel } from "@/components/ui/HorizontalCarousel";
 import { siteConfig } from "@/config/site";
 import { getProduct, getProducts } from "@/lib/shopify/products";
-import { getSeoPage } from "@/lib/shopify/seo-content";
+import { metafieldValue, parseReferences, parseTechnicalSpecs } from "@/lib/shopify/item-content";
 import { breadcrumbSchema, conciseText, jsonLdString, productMetaDescription } from "@/lib/seo";
 
 export async function generateMetadata({ params }: PageProps<"/products/[handle]">): Promise<Metadata> {
   const { handle } = await params;
-  const [product, seo] = await Promise.all([getProduct(handle), getSeoPage(`/products/${handle}`)]);
+  const product = await getProduct(handle);
   if (!product) notFound();
-  const title = seo?.title || product.seo.title || product.title;
-  const description = seo?.description || productMetaDescription(product);
+  const title = product.seo.title || product.title;
+  const description = productMetaDescription(product);
 
   return {
     title,
@@ -25,20 +25,22 @@ export async function generateMetadata({ params }: PageProps<"/products/[handle]
     openGraph: {
       title,
       description,
-      images: [seo?.socialImage?.url || product.featuredImage?.url || "/assets/logo-toan-tam.png"],
+      images: [product.featuredImage?.url || "/assets/logo-toan-tam.png"],
     },
   };
 }
 
 export default async function ProductPage({ params }: PageProps<"/products/[handle]">) {
   const { handle } = await params;
-  const [product, seo] = await Promise.all([getProduct(handle), getSeoPage(`/products/${handle}`)]);
+  const product = await getProduct(handle);
   if (!product) notFound();
 
   const related = (await getProducts(12)).filter((item) => item.id !== product.id).slice(0, 10);
   const initialVariant = product.variants.find((variant) => variant.availableForSale) ?? product.variants[0];
   const price = Number(initialVariant?.price.amount);
   const productPath = `/products/${encodeURIComponent(product.handle)}`;
+  const technicalSpecs = parseTechnicalSpecs(metafieldValue(product.metafields, "technical_specs"));
+  const references = parseReferences(metafieldValue(product.metafields, "seo_references"));
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -69,15 +71,14 @@ export default async function ProductPage({ params }: PageProps<"/products/[hand
       />
       <div className="product-detail">
         <ProductGallery product={product} />
-        <ProductInfo product={product} heading={seo?.heading} />
+        <ProductInfo product={product} />
       </div>
-      {seo?.intro && <p className="product-seo-intro">{seo.intro}</p>}
       <section className="product-description">
         <h2>Mô tả sản phẩm</h2>
         <div dangerouslySetInnerHTML={{ __html: product.descriptionHtml }} />
       </section>
-      <ProductSpecifications product={product} extra={seo?.technicalSpecs} />
-      {seo?.references.length ? <section className="product-sources"><h2>Nguồn tham khảo</h2><ul>{seo.references.map((reference) => <li key={reference.url}><a href={reference.url} target="_blank" rel="noopener noreferrer">{reference.label}</a></li>)}</ul></section> : null}
+      <ProductSpecifications product={product} extra={technicalSpecs} />
+      {references.length ? <section className="product-sources"><h2>Nguồn tham khảo</h2><ul>{references.map((reference) => <li key={reference.url}><a href={reference.url} target="_blank" rel="noopener noreferrer">{reference.label}</a></li>)}</ul></section> : null}
       {related.length > 0 && (
         <section className="related-products">
           <div className="section-heading"><h2>Sản phẩm liên quan</h2></div>
