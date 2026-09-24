@@ -1,10 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { CheckCircle, Phone } from "@phosphor-icons/react";
 import type { Money, Product, ProductVariant } from "@/lib/shopify/types";
 import { siteConfig } from "@/config/site";
+import { productVariantKey } from "@/lib/seo";
 
 function formatPrice(money?: Money) {
   if (!money || Number(money.amount) === 0) return "Liên hệ để nhận báo giá";
@@ -39,10 +40,21 @@ function stockStatus(variant?: ProductVariant) {
   return { label: "Còn hàng", className: "is-available" };
 }
 
-export function ProductInfo({ product }: { product: Product }) {
-  const initialVariant = product.variants.find((variant) => variant.availableForSale) ?? product.variants[0];
+export function ProductInfo({ product, initialVariantId }: { product: Product; initialVariantId?: string }) {
+  const initialVariant = product.variants.find((variant) => variant.id === initialVariantId)
+    ?? product.variants.find((variant) => variant.availableForSale) ?? product.variants[0];
   const [selectedVariantId, setSelectedVariantId] = useState(initialVariant?.id ?? "");
   const selectedVariant = product.variants.find((variant) => variant.id === selectedVariantId) ?? initialVariant;
+
+  useEffect(() => {
+    function syncFromUrl() {
+      const key = new URLSearchParams(window.location.search).get("variant");
+      const variant = product.variants.find((item) => productVariantKey(item) === key);
+      setSelectedVariantId(variant?.id ?? initialVariant?.id ?? "");
+    }
+    window.addEventListener("popstate", syncFromUrl);
+    return () => window.removeEventListener("popstate", syncFromUrl);
+  }, [product.variants, initialVariant?.id]);
 
   const optionGroups = useMemo(() => {
     const groups = new Map<string, string[]>();
@@ -77,6 +89,11 @@ export function ProductInfo({ product }: { product: Product }) {
 
     const nextVariant = exactMatch?.availableForSale ? exactMatch : availableMatch ?? exactMatch;
     setSelectedVariantId(nextVariant?.id ?? selectedVariantId);
+    if (nextVariant) {
+      const url = new URL(window.location.href);
+      url.searchParams.set("variant", productVariantKey(nextVariant));
+      window.history.pushState(null, "", url);
+    }
   }
 
   function optionIsAvailable(name: string, value: string) {

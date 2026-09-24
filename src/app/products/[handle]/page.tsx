@@ -6,10 +6,9 @@ import { ProductInfo } from "@/components/product/ProductInfo";
 import { ProductSpecifications } from "@/components/product/ProductSpecifications";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { HorizontalCarousel } from "@/components/ui/HorizontalCarousel";
-import { siteConfig } from "@/config/site";
 import { getProduct, getProducts } from "@/lib/shopify/products";
 import { metafieldValue, parseReferences, parseTechnicalSpecs } from "@/lib/shopify/item-content";
-import { breadcrumbSchema, conciseText, jsonLdString, productMetaDescription } from "@/lib/seo";
+import { breadcrumbSchema, jsonLdString, productMetaDescription, productSchema, productVariantKey } from "@/lib/seo";
 
 export async function generateMetadata({ params }: PageProps<"/products/[handle]">): Promise<Metadata> {
   const { handle } = await params;
@@ -31,35 +30,20 @@ export async function generateMetadata({ params }: PageProps<"/products/[handle]
   };
 }
 
-export default async function ProductPage({ params }: PageProps<"/products/[handle]">) {
+export default async function ProductPage({ params, searchParams }: PageProps<"/products/[handle]">) {
   const { handle } = await params;
+  const { variant: variantParam } = await searchParams;
   const product = await getProduct(handle);
   if (!product) notFound();
 
   const related = (await getProducts(12)).filter((item) => item.id !== product.id).slice(0, 10);
-  const initialVariant = product.variants.find((variant) => variant.availableForSale) ?? product.variants[0];
-  const price = Number(initialVariant?.price.amount);
+  const initialVariant = product.variants.find((variant) =>
+    typeof variantParam === "string" && productVariantKey(variant) === variantParam,
+  ) ?? product.variants.find((variant) => variant.availableForSale) ?? product.variants[0];
   const productPath = `/products/${encodeURIComponent(product.handle)}`;
   const technicalSpecs = parseTechnicalSpecs(metafieldValue(product.metafields, "technical_specs"));
   const references = parseReferences(metafieldValue(product.metafields, "seo_references"));
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    name: product.title,
-    description: conciseText(product.description, 500),
-    image: product.images.length ? product.images.map((image) => image.url) : product.featuredImage ? [product.featuredImage.url] : [],
-    sku: initialVariant?.sku,
-    brand: { "@type": "Brand", name: product.vendor || siteConfig.name },
-    ...(Number.isFinite(price) && price > 0 && initialVariant ? {
-      offers: {
-        "@type": "Offer",
-        url: new URL(productPath, siteConfig.url).href,
-        price: initialVariant.price.amount,
-        priceCurrency: initialVariant.price.currencyCode,
-        availability: initialVariant.availableForSale ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
-      },
-    } : {}),
-  };
+  const structuredProduct = productSchema(product);
 
   return (
     <div className="inner-page container">
@@ -72,7 +56,7 @@ export default async function ProductPage({ params }: PageProps<"/products/[hand
       />
       <div className="product-detail">
         <ProductGallery product={product} />
-        <ProductInfo product={product} />
+        <ProductInfo key={initialVariant?.id} product={product} initialVariantId={initialVariant?.id} />
       </div>
       <section className="product-description">
         <div className="product-description__header">
@@ -97,10 +81,10 @@ export default async function ProductPage({ params }: PageProps<"/products/[hand
           )}
         </section>
       )}
-      <script
+      {structuredProduct && <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: jsonLdString(jsonLd) }}
-      />
+        dangerouslySetInnerHTML={{ __html: jsonLdString(structuredProduct) }}
+      />}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(breadcrumbSchema([
         { name: "Trang chủ", path: "/" },
         { name: "Sản phẩm", path: "/products" },
