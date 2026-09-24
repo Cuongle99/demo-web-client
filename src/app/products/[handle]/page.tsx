@@ -15,11 +15,12 @@ export async function generateMetadata({ params }: PageProps<"/products/[handle]
   const { handle } = await params;
   const product = await getProduct(handle);
   if (!product) notFound();
-  const title = product.seo.title || product.title;
+  const shopifyTitle = product.seo.title?.trim();
+  const title = shopifyTitle || product.title;
   const description = productMetaDescription(product);
 
   return {
-    title,
+    title: shopifyTitle ? { absolute: shopifyTitle } : title,
     description,
     alternates: { canonical: `/products/${handle}` },
     openGraph: {

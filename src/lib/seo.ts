@@ -13,7 +13,7 @@ export function conciseText(text: string, maxLength = 175) {
 }
 
 export function productMetaDescription(product: Product) {
-  if (product.seo.description?.trim()) return conciseText(product.seo.description, 220);
+  if (product.seo.description?.trim()) return product.seo.description.trim();
   const title = conciseText(product.title, 105).replace(/…$/, "");
   return conciseText(`${title}. Xem đặc điểm, hình ảnh, giá tham khảo và nhận tư vấn từ ${siteConfig.name}.`, 175);
 }

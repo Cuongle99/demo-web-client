@@ -6,6 +6,8 @@ Store: `ad-homedecor.myshopify.com`. Website lấy thông tin SEO từ chính c�
 
 Mở mục tương ứng trong [Products](https://admin.shopify.com/store/ad-homedecor/products), [Collections](https://admin.shopify.com/store/ad-homedecor/collections) hoặc [Blog posts](https://admin.shopify.com/store/ad-homedecor/content/articles?selectedView=all). Tại cuối trang, mở **Search engine listing → Edit** để sửa **Page title** và **Meta description**, rồi lưu mục. Đây là nguồn dữ liệu cho `<title>`, meta description và Open Graph trên website.
 
+Với trang chi tiết sản phẩm, Page title và Meta description đã nhập được dùng nguyên văn (sau khi bỏ khoảng trắng thừa ở hai đầu); website không tự thêm tên thương hiệu vào Page title đã cấu hình. Nếu một trường SEO còn trống, website dùng nội dung dự phòng từ sản phẩm. Thay đổi có thể cần khoảng 5 phút để cache Storefront API được làm mới.
+
 | Loại mục | Trường nội dung khác có thể sửa ngay trong mục |
 |---|---|
 | Sản phẩm | Title là H1; Description là mô tả dài; Media là ảnh chia sẻ mặc định. **Product metafields** được ghim: Thông số kỹ thuật, Nguồn tham khảo sản phẩm. |
