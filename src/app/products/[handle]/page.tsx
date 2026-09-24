@@ -75,8 +75,11 @@ export default async function ProductPage({ params }: PageProps<"/products/[hand
         <ProductInfo product={product} />
       </div>
       <section className="product-description">
-        <h2>Mô tả sản phẩm</h2>
-        <div dangerouslySetInnerHTML={{ __html: product.descriptionHtml }} />
+        <div className="product-description__header">
+          <span className="product-description__eyebrow">Thông tin chi tiết</span>
+          <h2>Mô tả sản phẩm</h2>
+        </div>
+        <div className="product-description__content" dangerouslySetInnerHTML={{ __html: product.descriptionHtml }} />
       </section>
       <ProductSpecifications product={product} extra={technicalSpecs} />
       {references.length ? <section className="product-sources"><h2>Nguồn tham khảo</h2><ul>{references.map((reference) => <li key={reference.url}><a href={reference.url} target="_blank" rel="noopener noreferrer">{reference.label}</a></li>)}</ul></section> : null}
