@@ -53,3 +53,7 @@ Lighthouse 13.4.0 trên Headless Chrome 153, ba lượt cho mỗi mẫu trang v�
 | Chi tiết blog | Desktop | 100 | 100 | 0.56 s | 0 |
 
 Không lượt nào có CLS > 0.1, so với 9/36 lượt trong audit ban đầu. LCP mobile còn trên 2.5 giây ở 5/6 mẫu, cao nhất là trang chủ 3.74 giây. Đây là việc tối ưu hiệu năng còn mở; kết quả Lighthouse không phản ánh Core Web Vitals thực địa. Phần nội dung y tế cần rà soát chuyên môn như nêu trên.
+
+## Cập nhật 24/09/2026
+
+Đối chiếu lại 40 sản phẩm trong Shopify với HTML của trang chi tiết: các Page title đã cấu hình và Meta description đều khớp sau khi loại bỏ hậu tố tự thêm vào title và việc cắt ngắn description. Một sản phẩm nẹp bàn chân chưa có Page title riêng đã được điền vào trường Search engine listing, nên hiện 40/40 sản phẩm có title và description cấu hình trong Shopify. Sitemap được làm mới theo chu kỳ 5 phút để phản ánh handle sửa trong Shopify; hai URL sản phẩm cũ phát hiện trong sitemap được chuyển hướng vĩnh viễn tới URL mới.
