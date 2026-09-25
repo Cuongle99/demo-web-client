@@ -7,6 +7,7 @@ import { ProductSpecifications } from "@/components/product/ProductSpecification
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { HorizontalCarousel } from "@/components/ui/HorizontalCarousel";
 import { getProduct, getProducts } from "@/lib/shopify/products";
+import { relatedProducts } from "@/lib/shopify/related-products";
 import { metafieldValue, parseReferences, parseTechnicalSpecs } from "@/lib/shopify/item-content";
 import { breadcrumbSchema, jsonLdString, productMetaDescription, productSchema, productVariantKey } from "@/lib/seo";
 
@@ -33,10 +34,10 @@ export async function generateMetadata({ params }: PageProps<"/products/[handle]
 export default async function ProductPage({ params, searchParams }: PageProps<"/products/[handle]">) {
   const { handle } = await params;
   const { variant: variantParam } = await searchParams;
-  const product = await getProduct(handle);
+  const [product, candidates] = await Promise.all([getProduct(handle), getProducts(100)]);
   if (!product) notFound();
 
-  const related = (await getProducts(12)).filter((item) => item.id !== product.id).slice(0, 10);
+  const related = relatedProducts(product, candidates);
   const initialVariant = product.variants.find((variant) =>
     typeof variantParam === "string" && productVariantKey(variant) === variantParam,
   ) ?? product.variants.find((variant) => variant.availableForSale) ?? product.variants[0];

@@ -129,6 +129,9 @@ export function ProductInfo({ product, initialVariantId }: { product: Product; i
                 {group.values.map((value) => {
                   const selected = selectedOptions.get(group.name) === value;
                   const available = optionIsAvailable(group.name, value);
+                  const pricedVariant = optionGroups.length === 1
+                    ? product.variants.find((variant) => optionsFor(variant).some((option) => option.name === group.name && option.value === value))
+                    : undefined;
                   return (
                     <button
                       className="product-variants__option"
@@ -139,7 +142,8 @@ export function ProductInfo({ product, initialVariantId }: { product: Product; i
                       type="button"
                       aria-pressed={selected}
                     >
-                      {value}
+                      <span>{value}</span>
+                      {pricedVariant && <small>{formatPrice(pricedVariant.price)}</small>}
                     </button>
                   );
                 })}
