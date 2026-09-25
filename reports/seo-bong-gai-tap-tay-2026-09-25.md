@@ -31,6 +31,15 @@ Ngày kiểm tra: 25/09/2026
 
 Không thể cam kết vị trí top Google từ thay đổi kỹ thuật đơn lẻ. Kết quả phụ thuộc cạnh tranh, chất lượng thông tin sản phẩm, uy tín website và thời gian Google thu thập lại. `site:` hoặc việc không thấy kết quả trong một lần tìm kiếm không phải phép thử index đáng tin; dùng URL Inspection của Search Console. Không thêm `FAQPage` hay đánh giá giả để cố lấy rich result. Giá, tồn kho và thông tin y tế phải trùng dữ liệu thật trên trang.
 
+## Cập nhật Search Console — 25/09/2026
+
+- URL Inspection báo **“URL không nằm trên Google”**, nguyên nhân **“Google không xác định được URL”**. Không có lần crawl trước đó, sitemap giới thiệu hay canonical do Google chọn trong dữ liệu chỉ mục tại thời điểm kiểm tra.
+- Live Test lúc 14:35 (GMT+7) bằng công cụ kiểm tra trên điện thoại thông minh: tải trang thành công, được phép crawl và index; canonical khai báo đúng URL sản phẩm. Google chỉ chọn canonical sau khi lập chỉ mục.
+- Google nhận 1 Product snippet, 3 merchant listings và 1 breadcrumb hợp lệ. Cảnh báo không nghiêm trọng gồm thiếu `review`/`aggregateRating` và thiếu chính sách đổi trả/chi tiết vận chuyển trong schema. Chỉ thêm các trường này khi có dữ liệu thật và chính sách công khai tương ứng.
+- Đã gửi yêu cầu lập chỉ mục cho URL; Search Console xác nhận URL đã vào hàng đợi ưu tiên crawl. Gửi nhiều lần không tăng ưu tiên.
+- Đã gửi `https://demo-web-client.shop/sitemap.xml`; trạng thái **Thành công**, Google đọc ngày 25/09/2026 và phát hiện **58 trang**.
+- Báo cáo Performance và Page Indexing của property đang xử lý dữ liệu, dự kiến kiểm tra lại sau khoảng một ngày theo giao diện Search Console. Chưa có dữ liệu về impressions, clicks, CTR hay vị trí để đánh giá tác động.
+
 ## Nguồn Google
 
 - [Best practices for ecommerce sites](https://developers.google.com/search/docs/specialty/ecommerce)
