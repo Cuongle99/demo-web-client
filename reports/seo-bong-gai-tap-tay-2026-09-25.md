@@ -12,7 +12,7 @@ Ngày kiểm tra: 25/09/2026
 
 ## Thay đổi trong code
 
-1. Chọn sản phẩm liên quan bằng các từ có nghĩa trong tên hàng; chỉ hiện sản phẩm có ít nhất hai từ chung và ưu tiên sản phẩm cùng collection. Điều này làm các liên kết sản phẩm từ trang đích sát chủ đề hơn.
+1. Chọn sản phẩm liên quan bằng các từ có nghĩa trong tên hàng; bỏ từ quá chung như “tập”, coi “phục hồi” là một khái niệm, chỉ hiện sản phẩm có ít nhất hai khái niệm chung và ưu tiên sản phẩm cùng collection. Điều này làm các liên kết sản phẩm từ trang đích sát chủ đề hơn.
 2. Hiển thị giá ngay trên nút chọn phiên bản khi sản phẩm chỉ có một nhóm tùy chọn. Các giá lấy trực tiếp từ Shopify và vẫn theo trạng thái phiên bản hiện tại. Kích thước nút tối thiểu 44 px.
 3. Giữ nguyên dữ liệu SEO/giá/availability hiện có, tránh tạo review, chứng nhận hoặc tuyên bố điều trị không được xác minh.
 

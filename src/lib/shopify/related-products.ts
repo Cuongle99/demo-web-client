@@ -2,11 +2,12 @@ import type { Product } from "./types";
 
 const commonWords = new Set([
   "sản", "phẩm", "thiết", "bị", "hỗ", "trợ", "chức", "năng", "loại", "cho",
-  "của", "và", "các", "người", "dùng", "với", "tại", "nhà", "theo",
+  "của", "và", "các", "người", "dùng", "với", "tại", "nhà", "theo", "tập",
 ]);
 
 function titleWords(title: string) {
-  return new Set((title.toLocaleLowerCase("vi-VN").match(/[\p{L}\p{N}]+/gu) ?? [])
+  const normalized = title.toLocaleLowerCase("vi-VN").replace(/phục\s+hồi/g, "phụchồi");
+  return new Set((normalized.match(/[\p{L}\p{N}]+/gu) ?? [])
     .filter((word) => word.length > 2 && !commonWords.has(word)));
 }
 
