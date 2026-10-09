@@ -1,0 +1,15 @@
+.article {
+  max-width: 72ch;
+  margin: 0 auto;
+  padding: 24px 0 48px;
+  color: #25343d;
+  font-size: 1rem;
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+}
+.article h1 { font-size: clamp(1.75rem, 4vw, 2.5rem); line-height: 1.25; }
+.article h2 { margin: 0 0 12px; font-size: 1.3rem; line-height: 1.4; }
+.article p { margin: 0 0 16px; }
+.article section { margin-top: 32px; }
+.article .intro { margin-top: 20px; }
+.article a { color: #006b78; text-decoration: underline; text-underline-offset: 3px; }

@@ -3,10 +3,11 @@ import { Clock, EnvelopeSimple, MapPin, Phone } from "@phosphor-icons/react/dist
 import { siteConfig } from "@/config/site";
 import { Logo } from "./Logo";
 import { getCollections } from "@/lib/shopify/collections";
+import { policies } from "@/content/policies";
 
 const columns = [
-  { title: "Liên hệ", links: [{ label: "Thông tin liên hệ", href: "/contact" }] },
-  { title: "Hỗ trợ khách hàng", links: [{ label: "Yêu cầu báo giá", href: "/request-quote" }, { label: "Kiến thức chăm sóc sức khỏe", href: "/blogs" }] },
+  { title: "Liên hệ", links: [{ label: "Thông tin liên hệ", href: "/contact" }, { label: "Yêu cầu báo giá", href: "/request-quote" }, { label: "Kiến thức chăm sóc sức khỏe", href: "/blogs" }] },
+  { title: "Hỗ trợ khách hàng", links: policies.map((policy) => ({ label: "label" in policy ? policy.label : policy.title, href: `/policies/${policy.slug}` })) },
 ];
 
 export async function Footer() {
