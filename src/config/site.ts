@@ -21,7 +21,7 @@ export const siteConfig = {
   phone: "0967.088.154",
   phoneHref: "tel:+84967088154",
   email: "thietbiytetoantam@gmail.com",
-  address: "Số 273, Đ. Lý Thường Kiệt, P.15, Q.11, TP.HCM",
+  address: "Số 2, LK41, KĐT Vân Canh, Xã Sơn Đồng, TP Hà Nội",
   nav: [
     { label: "Trang chủ", href: "/" },
     { label: "Sản phẩm", href: "/products" },
