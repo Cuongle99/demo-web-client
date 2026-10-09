@@ -4,14 +4,19 @@ Production-oriented Next.js catalog based on the supplied visual reference. Shop
 
 ## Local development
 
-1. Copy `.env.example` to `.env.local` and add Shopify Storefront API credentials. Without credentials, realistic mock catalog data is used.
+1. Create `.env.local` with `SHOPIFY_STORE_DOMAIN` and `SHOPIFY_STOREFRONT_ACCESS_TOKEN`. For offline development only, leave both unset and explicitly set `SHOPIFY_USE_MOCK_DATA=true`. Partial configuration always fails; production never uses mock data.
 2. Run `npm run dev`.
 3. Open `http://localhost:3000`.
 
 The contact adapter posts to `CONTACT_WEBHOOK_URL` when configured. This keeps Resend, SendGrid, SMTP, HubSpot, Salesforce, or a custom CRM replaceable without changing the UI or route handlers.
 
 Run `npm run lint` and `npm run build` before deployment.
-Run `node --test scripts/verify-seo.mjs` for canonical URL and sitemap pagination regression checks.
+Run `npx next typegen` and `npx tsc --noEmit` for type checking without API credentials.
+Run `node --test scripts/verify-seo.mjs scripts/verify-shopify.mjs` for metadata, sitemap, configuration and upstream failure checks.
+Production builds require both Shopify variables in the target hosting environment. Preview has separate variables; a failed preview with missing variables must not be fixed by enabling mock data. Runtime API failures reach retryable error boundaries; only real missing resources become 404s.
+
+The sitemap intentionally omits `lastModified`: generic Shopify `updatedAt` has not been verified as a meaningful content-change timestamp. Add it only when backed by a reliable editorial timestamp.
+Policy drafts stay outside public routes and the sitemap until the owner approves the actual business terms. Do not infer return/shipping schema from placeholders.
 
 ## Production domain
 

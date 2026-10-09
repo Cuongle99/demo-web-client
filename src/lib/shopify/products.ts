@@ -113,7 +113,7 @@ export async function getProductsPage(options: ProductPageOptions = {}): Promise
   const sortKey = options.sortKey ?? "BEST_SELLING";
   const reverse = options.reverse ?? false;
   const cursors: string[] = [];
-    const seenCursors = new Set<string>();
+  const seenCursors = new Set<string>();
   let after: string | null = null;
 
   while (true) {
