@@ -3,9 +3,13 @@ export const siteConfig = {
   shortName: "TOÀN TÂM",
   description:
     "Thiết bị y tế chính hãng cho bệnh viện, phòng khám và gia đình.",
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
-  phone: "0931 886 807",
-  phoneHref: "tel:+84931886807",
+  url:
+    process.env.NEXT_PUBLIC_SITE_URL ??
+    (process.env.NODE_ENV === "production"
+      ? "https://thiet-bi-y-te-toan-tam.com"
+      : "http://localhost:3000"),
+  phone: "0967.088.154",
+  phoneHref: "tel:+84967088154",
   email: "info@toantammedical.vn",
   address: "Số 273, Đ. Lý Thường Kiệt, P.15, Q.11, TP.HCM",
   nav: [
