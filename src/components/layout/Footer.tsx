@@ -5,8 +5,8 @@ import { Logo } from "./Logo";
 import { getCollections } from "@/lib/shopify/collections";
 
 const columns = [
-  { title: "Về chúng tôi", links: ["Giới thiệu", "Tầm nhìn - Sứ mệnh", "Chính sách chất lượng", "Tuyển dụng", "Liên hệ"] },
-  { title: "Hỗ trợ khách hàng", links: ["Hướng dẫn mua hàng", "Chính sách thanh toán", "Chính sách vận chuyển", "Chính sách bảo hành", "Đổi trả - Hoàn tiền"] },
+  { title: "Liên hệ", links: [{ label: "Thông tin liên hệ", href: "/contact" }] },
+  { title: "Hỗ trợ khách hàng", links: [{ label: "Yêu cầu báo giá", href: "/request-quote" }, { label: "Kiến thức chăm sóc sức khỏe", href: "/blogs" }] },
 ];
 
 export async function Footer() {
@@ -24,7 +24,7 @@ export async function Footer() {
       <div className="footer-main">
         <div className="container footer-grid">
           <div className="footer-about"><Logo inverse /><p>Thiết bị y tế Toàn Tâm – đối tác tin cậy cung cấp giải pháp thiết bị y tế toàn diện cho cơ sở y tế và gia đình.</p></div>
-          {columns.map((column) => <div className="footer-column" key={column.title}><h3>{column.title}</h3>{column.links.map((label) => <Link href="/contact" key={label}>{label}</Link>)}</div>)}
+          {columns.map((column) => <div className="footer-column" key={column.title}><h3>{column.title}</h3>{column.links.map((link) => <Link href={link.href} key={link.href}>{link.label}</Link>)}</div>)}
           <div className="footer-column"><h3>Danh mục sản phẩm</h3>{collections.length ? collections.map((collection) => <Link href={`/collections/${collection.handle}`} key={collection.id}>{collection.title}</Link>) : <Link href="/collections">Xem tất cả danh mục</Link>}</div>
           <div className="footer-newsletter"><h3>Đăng ký nhận tin</h3><p>Nhận thông tin sản phẩm mới và ưu đãi đặc biệt.</p><form><label className="sr-only" htmlFor="newsletter">Email</label><input id="newsletter" type="email" placeholder="Nhập email của bạn" /><button type="submit">Đăng ký</button></form></div>
         </div>

@@ -7,7 +7,6 @@ import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { getCollections } from "@/lib/shopify/collections";
 import { getSeoPage } from "@/lib/shopify/seo-content";
 import { pageMetadata } from "@/lib/seo";
-import { categories } from "@/lib/mock-data";
 
 export async function generateMetadata(): Promise<Metadata> {
   const seo = await getSeoPage("/collections");
@@ -18,16 +17,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function CollectionsPage() {
   const [collections, seo] = await Promise.all([getCollections(50), getSeoPage("/collections")]);
-  const displayCollections = collections.length
-    ? collections
-    : categories.map((category) => ({
-        id: `mock-${category.handle}`,
-        handle: category.handle,
-        title: category.title,
-        description: "",
-        image: { url: category.image, altText: category.title },
-        seo: {},
-      }));
+  const displayCollections = collections;
 
   return (
     <div className="inner-page container collections-page">

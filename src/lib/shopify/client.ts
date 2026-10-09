@@ -1,10 +1,7 @@
 import "server-only";
+export { hasShopifyConfig, shouldUseMockData } from "./config";
 
 type ShopifyResponse<T> = { data?: T; errors?: Array<{ message: string }> };
-
-export function hasShopifyConfig() {
-  return Boolean(process.env.SHOPIFY_STORE_DOMAIN && process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN);
-}
 
 export async function shopifyFetch<T>(query: string, variables: Record<string, unknown> = {}): Promise<T> {
   const domain = process.env.SHOPIFY_STORE_DOMAIN;

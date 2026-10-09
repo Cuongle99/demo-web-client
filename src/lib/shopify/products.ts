@@ -1,4 +1,4 @@
-import { hasShopifyConfig, shopifyFetch } from "./client";
+import { shouldUseMockData, shopifyFetch } from "./client";
 import { PRODUCT_BY_HANDLE_QUERY, PRODUCTS_CURSOR_QUERY, PRODUCTS_PAGE_QUERY, PRODUCTS_QUERY } from "./queries";
 import type { Product } from "./types";
 import { mockProducts } from "@/lib/mock-data";
@@ -94,25 +94,26 @@ function mockProductPage(options: ProductPageOptions): ProductPageResult {
 }
 
 export async function getProduct(handle: string): Promise<Product | null> {
-  if (!hasShopifyConfig()) return mockProducts.find((item) => item.handle === handle) ?? null;
+  if (shouldUseMockData()) return mockProducts.find((item) => item.handle === handle) ?? null;
   const data = await shopifyFetch<ProductPayload>(PRODUCT_BY_HANDLE_QUERY, { handle });
   return data.product ? normalizeProduct(data.product) : null;
 }
 
 export async function getProducts(first = 12): Promise<Product[]> {
-  if (!hasShopifyConfig()) return mockProducts.slice(0, first);
+  if (shouldUseMockData()) return mockProducts.slice(0, first);
   const data = await shopifyFetch<ProductsPayload>(PRODUCTS_QUERY, { first, query: null });
   return data.products.nodes.map(normalizeProduct);
 }
 
 export async function getProductsPage(options: ProductPageOptions = {}): Promise<ProductPageResult> {
-  if (!hasShopifyConfig()) return mockProductPage(options);
+  if (shouldUseMockData()) return mockProductPage(options);
 
   const pageSize = options.pageSize ?? 12;
   const query = productQuery(options);
   const sortKey = options.sortKey ?? "BEST_SELLING";
   const reverse = options.reverse ?? false;
   const cursors: string[] = [];
+    const seenCursors = new Set<string>();
   let after: string | null = null;
 
   while (true) {
@@ -121,7 +122,9 @@ export async function getProductsPage(options: ProductPageOptions = {}): Promise
     });
     cursors.push(...cursorData.products.edges.map((edge) => edge.cursor));
     const nextCursor: string | null | undefined = cursorData.products.pageInfo.endCursor;
-    if (!cursorData.products.pageInfo.hasNextPage || !nextCursor || nextCursor === after) break;
+    if (!cursorData.products.pageInfo.hasNextPage) break;
+    if (!nextCursor || seenCursors.has(nextCursor)) throw new Error("Product pagination did not advance.");
+    seenCursors.add(nextCursor);
     after = nextCursor;
   }
 

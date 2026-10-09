@@ -1,5 +1,5 @@
 import { mockCollection } from "@/lib/mock-data";
-import { hasShopifyConfig, shopifyFetch } from "./client";
+import { shouldUseMockData, shopifyFetch } from "./client";
 import { COLLECTION_CURSOR_QUERY, COLLECTION_PAGE_QUERY, COLLECTION_QUERY, COLLECTIONS_QUERY } from "./queries";
 import type { Collection, CollectionSummary, Product } from "./types";
 import { normalizeCollection, normalizeCollectionSummary, type ShopifyCollectionRaw, type ShopifyCollectionSummaryRaw } from "./normalize";
@@ -83,13 +83,13 @@ function mockCollectionPage(handle: string, options: CollectionPageOptions): Col
 }
 
 export async function getCollection(handle: string, first = 24, after?: string): Promise<Collection | null> {
-  if (!hasShopifyConfig()) return handle === mockCollection.handle ? mockCollection : null;
+  if (shouldUseMockData()) return handle === mockCollection.handle ? mockCollection : null;
   const data = await shopifyFetch<CollectionPayload>(COLLECTION_QUERY, { handle, first, after: after ?? null });
   return data.collection ? normalizeCollection(data.collection) : null;
 }
 
 export async function getCollectionPage(handle: string, options: CollectionPageOptions = {}): Promise<CollectionPageResult | null> {
-  if (!hasShopifyConfig()) return mockCollectionPage(handle, options);
+  if (shouldUseMockData()) return mockCollectionPage(handle, options);
 
   const pageSize = options.pageSize ?? 12;
   const sortKey = options.sortKey ?? "COLLECTION_DEFAULT";
@@ -98,6 +98,7 @@ export async function getCollectionPage(handle: string, options: CollectionPageO
 
   async function scan(activeFilters: Array<Record<string, unknown>>) {
     const cursors: string[] = [];
+    const seenCursors = new Set<string>();
     const productTypes = new Set<string>();
     let after: string | null = null;
     let collection: NonNullable<CollectionCursorsPayload["collection"]> | null = null;
@@ -112,7 +113,9 @@ export async function getCollectionPage(handle: string, options: CollectionPageO
         if (edge.node.productType) productTypes.add(edge.node.productType);
       }
       const nextCursor = collection.products.pageInfo.endCursor;
-      if (!collection.products.pageInfo.hasNextPage || !nextCursor || nextCursor === after) break;
+      if (!collection.products.pageInfo.hasNextPage) break;
+      if (!nextCursor || seenCursors.has(nextCursor)) throw new Error("Collection pagination did not advance.");
+      seenCursors.add(nextCursor);
       after = nextCursor;
     }
     return { collection, cursors, productTypes };
@@ -142,7 +145,7 @@ export async function getCollectionPage(handle: string, options: CollectionPageO
 }
 
 export async function getCollections(first = 8): Promise<CollectionSummary[]> {
-  if (!hasShopifyConfig()) return [];
+  if (shouldUseMockData()) return [{ id: mockCollection.id, handle: mockCollection.handle, title: mockCollection.title, description: mockCollection.description, image: mockCollection.image, seo: mockCollection.seo }];
   const data = await shopifyFetch<CollectionsPayload>(COLLECTIONS_QUERY, { first });
   return data.collections.nodes.map(normalizeCollectionSummary);
 }

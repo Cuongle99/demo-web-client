@@ -120,7 +120,7 @@ export function ProductGallery({ product }: { product: Product }) {
       <div className={`product-gallery__main product-gallery__main--${selectedItem.type}`}>
         <div key={selectedItem.id} className={`product-gallery__stage product-gallery__stage--${transitionDirection}`}>
           {selectedItem.type === "image" && (
-            <Image src={selectedItem.image.url} alt={selectedItem.altText || product.title} fill priority sizes="(max-width: 800px) 100vw, 50vw" style={{ objectPosition: selectedItem.image.focalPosition ?? "center" }} />
+            <Image src={selectedItem.image.url} alt={selectedItem.altText || product.title} fill loading="eager" fetchPriority="high" sizes="(max-width: 800px) 100vw, 50vw" style={{ objectPosition: selectedItem.image.focalPosition ?? "center" }} />
           )}
           {selectedItem.type === "video" && (
             <video controls playsInline preload="metadata" poster={selectedItem.previewImage?.url} aria-label={selectedItem.altText || `Video ${product.title}`}>

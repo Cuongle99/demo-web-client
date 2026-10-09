@@ -9,6 +9,7 @@ import { siteConfig } from "@/config/site";
 export function MobileNavigation() {
   const [open, setOpen] = useState(false);
   const closeRef = useRef<HTMLButtonElement>(null);
+  const drawerRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -17,6 +18,13 @@ export function MobileNavigation() {
     document.body.style.overflow = "hidden";
     closeRef.current?.focus();
     const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Tab") {
+        const controls = drawerRef.current?.querySelectorAll<HTMLElement>('a[href], button:not([disabled])');
+        const first = controls?.[0];
+        const last = controls?.[controls.length - 1];
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+      }
       if (event.key === "Escape") {
         setOpen(false);
         window.requestAnimationFrame(() => triggerRef.current?.focus());
@@ -39,7 +47,7 @@ export function MobileNavigation() {
       <List weight="bold" aria-hidden="true" /><span>Menu</span>
     </button>
     <button className="mobile-nav__backdrop" type="button" aria-label="Đóng menu" tabIndex={open ? 0 : -1} onClick={close} />
-    <aside id="mobile-drawer" className="mobile-nav__drawer" aria-label="Menu chính" aria-modal="true" role="dialog" aria-hidden={!open}>
+    <div ref={drawerRef} id="mobile-drawer" className="mobile-nav__drawer" aria-label="Menu chính" aria-modal="true" role="dialog" aria-hidden={!open} inert={!open}>
       <div className="mobile-nav__header">
         <Image src="/assets/logo-toan-tam.png" alt="Toàn Tâm Medical" width={150} height={50} />
         <button ref={closeRef} type="button" aria-label="Đóng menu" onClick={close}><X weight="bold" /></button>
@@ -51,6 +59,6 @@ export function MobileNavigation() {
         <a href={siteConfig.phoneHref}><Phone weight="fill" /> {siteConfig.phone}</a>
         <Link href="/request-quote" onClick={close}>Yêu cầu báo giá</Link>
       </div>
-    </aside>
+    </div>
   </div>;
 }

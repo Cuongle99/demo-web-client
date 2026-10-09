@@ -52,7 +52,7 @@ export default async function ArticlePage({ params }: PageProps<"/blogs/[blogHan
       <div><time dateTime={article.publishedAt}>{new Intl.DateTimeFormat("vi-VN", { dateStyle: "long" }).format(new Date(article.publishedAt))}</time>{article.author && <span> · {article.author}</span>}</div>
       {article.reviewerName && <p className="article-page__reviewer">Rà soát nội dung: {article.reviewerName}{article.reviewerRole ? ` — ${article.reviewerRole}` : ""}{article.reviewedAt ? ` · ${article.reviewedAt}` : ""}</p>}
     </header>
-    {article.image && <div className="article-page__hero"><Image src={article.image.url} alt={article.image.altText || article.title} fill priority sizes="(max-width: 900px) 100vw, 900px" /></div>}
+    {article.image && <div className="article-page__hero"><Image src={article.image.url} alt={article.image.altText || article.title} fill loading="eager" fetchPriority="high" sizes="(max-width: 900px) 100vw, 900px" /></div>}
     {article.excerpt && <p className="article-page__intro">{article.excerpt}</p>}
     <div className="article-content" dangerouslySetInnerHTML={{ __html: normalizeArticleHeadings(article.contentHtml) }} />
     <p className="article-page__note">Nội dung cung cấp thông tin tham khảo về thiết bị hỗ trợ. Việc lựa chọn và sử dụng trong điều trị cần theo hướng dẫn của nhân viên y tế.</p>

@@ -55,7 +55,7 @@ test("structured data links the website to the organization and safely escapes H
 function sitemapWith(fetch) {
   return load("src/lib/shopify/sitemap.ts", {
     "@/lib/mock-data": { mockProducts: [] },
-    "./client": { hasShopifyConfig: () => true, shopifyFetch: fetch },
+    "./client": { shouldUseMockData: () => false, shopifyFetch: fetch },
   });
 }
 

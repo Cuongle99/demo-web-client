@@ -1,4 +1,6 @@
 import type { NextConfig } from "next";
+import { PHASE_PRODUCTION_BUILD } from "next/constants";
+import { shouldUseMockData } from "./src/lib/shopify/config";
 
 const nextConfig: NextConfig = {
   images: { remotePatterns: [{ protocol: "https", hostname: "cdn.shopify.com" }] },
@@ -17,4 +19,8 @@ const nextConfig: NextConfig = {
   ],
 };
 
-export default nextConfig;
+export default function config(phase: string): NextConfig {
+  // Type generation does not fetch content and must work without credentials.
+  if (phase === PHASE_PRODUCTION_BUILD && !process.argv.includes("typegen")) shouldUseMockData({ ...process.env, NODE_ENV: "production" });
+  return nextConfig;
+}

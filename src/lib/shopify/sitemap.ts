@@ -1,11 +1,11 @@
 import "server-only";
 import { mockProducts } from "@/lib/mock-data";
-import { hasShopifyConfig, shopifyFetch } from "./client";
+import { shouldUseMockData, shopifyFetch } from "./client";
 
 export const SITEMAP_PRODUCTS_QUERY = `#graphql
   query SitemapProducts($after: String) {
     products(first: 250, after: $after, sortKey: ID) {
-      nodes { handle updatedAt }
+      nodes { handle }
       pageInfo { hasNextPage endCursor }
     }
   }
@@ -14,7 +14,7 @@ export const SITEMAP_PRODUCTS_QUERY = `#graphql
 export const SITEMAP_COLLECTIONS_QUERY = `#graphql
   query SitemapCollections($after: String) {
     collections(first: 250, after: $after, sortKey: ID) {
-      nodes { handle updatedAt }
+      nodes { handle }
       pageInfo { hasNextPage endCursor }
     }
   }
@@ -34,7 +34,7 @@ type Connection = { nodes: SitemapNode[]; pageInfo: { hasNextPage: boolean; endC
 export type SitemapResource = { path: string; lastModified?: string };
 
 export async function getSitemapResources(): Promise<SitemapResource[]> {
-  if (!hasShopifyConfig()) {
+  if (shouldUseMockData()) {
     return mockProducts.map((product) => ({ path: `/products/${encodeURIComponent(product.handle)}` }));
   }
 
@@ -50,7 +50,6 @@ export async function getSitemapResources(): Promise<SitemapResource[]> {
         if (key === "articles" && !node.blog?.handle) throw new Error("Sitemap article is missing its blog handle.");
         resources.push({
           path: key === "articles" ? `/blogs/${encodeURIComponent(node.blog!.handle)}/${handle}` : `/${key}/${handle}`,
-          ...(node.updatedAt ? { lastModified: node.updatedAt } : {}),
         });
       }
       if (!connection.pageInfo.hasNextPage) break;

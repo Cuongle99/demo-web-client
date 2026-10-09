@@ -1,20 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { CollectionIcon } from "@/components/collection/CollectionIcon";
-import { categories } from "@/lib/mock-data";
 import type { CollectionSummary } from "@/lib/shopify/types";
 
 export function CategoryStrip({ collections }: { collections: CollectionSummary[] }) {
-  const items = collections.length
-    ? collections
-    : categories.map((category) => ({
-        id: `mock-${category.handle}`,
-        handle: category.handle,
-        title: category.title,
-        description: "",
-        image: { url: category.image, altText: category.title },
-        seo: {},
-      }));
+  const items = collections;
 
   return (
     <section className="section category-section">
