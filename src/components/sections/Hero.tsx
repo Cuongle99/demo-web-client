@@ -53,6 +53,11 @@ export function Hero({ slides }: { slides: HomepageHeroContent[] }) {
       const desktopProps = desktopImage ? getImageProps({ src: desktopImage.url, alt, width: desktopImage.width || 1440, height: desktopImage.height || 600, sizes: "100vw" }).props : null;
       const mobileProps = mobileImage ? getImageProps({ src: mobileImage.url, alt, width: mobileImage.width || 750, height: mobileImage.height || 320, sizes: "100vw" }).props : null;
       return <article className={`hero__slide ${index === active ? "hero__slide--active" : ""}`} aria-hidden={index !== active} key={slide.id}>
+        {index === 0 && desktopProps && mobileProps && <>
+          {/* Match picture's mutually exclusive sources so only one banner is preloaded. */}
+          {mobileProps.srcSet !== desktopProps.srcSet && <link rel="preload" as="image" href={mobileProps.src} media="(max-width: 700px)" imageSrcSet={mobileProps.srcSet} imageSizes={mobileProps.sizes} fetchPriority="high" />}
+          <link rel="preload" as="image" href={desktopProps.src} media={mobileProps.srcSet !== desktopProps.srcSet ? "(width > 700px)" : undefined} imageSrcSet={desktopProps.srcSet} imageSizes={desktopProps.sizes} fetchPriority="high" />
+        </>}
         {desktopProps && mobileProps && <picture>
           <source media="(max-width: 700px)" srcSet={mobileProps.srcSet} sizes={mobileProps.sizes} />
           {/* getImageProps supplies optimized srcset while picture downloads only the matching source. */}
