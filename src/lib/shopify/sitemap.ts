@@ -43,7 +43,7 @@ export async function getSitemapResources(): Promise<SitemapResource[]> {
     const seenCursors = new Set<string>();
     let after: string | null = null;
     while (true) {
-      const data: Record<string, Connection> = await shopifyFetch<Record<string, Connection>>(query, { after });
+      const data: Record<string, Connection> = await shopifyFetch<Record<string, Connection>>(query, { after }, { cache: "no-store" });
       const connection: Connection = data[key];
       for (const node of connection.nodes) {
         const handle = encodeURIComponent(node.handle);

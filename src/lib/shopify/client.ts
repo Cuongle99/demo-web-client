@@ -3,7 +3,11 @@ export { hasShopifyConfig, shouldUseMockData } from "./config";
 
 type ShopifyResponse<T> = { data?: T; errors?: Array<{ message: string }> };
 
-export async function shopifyFetch<T>(query: string, variables: Record<string, unknown> = {}): Promise<T> {
+export async function shopifyFetch<T>(
+  query: string,
+  variables: Record<string, unknown> = {},
+  options: { cache?: "no-store" } = {},
+): Promise<T> {
   const domain = process.env.SHOPIFY_STORE_DOMAIN;
   const token = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN;
   const apiVersion = process.env.SHOPIFY_API_VERSION ?? "2026-07";
@@ -14,7 +18,9 @@ export async function shopifyFetch<T>(query: string, variables: Record<string, u
     method: "POST",
     headers: { "Content-Type": "application/json", "X-Shopify-Storefront-Access-Token": token },
     body: JSON.stringify({ query, variables }),
-    next: { revalidate: 300, tags: ["shopify"] },
+    ...(options.cache === "no-store"
+      ? { cache: "no-store" as const }
+      : { next: { revalidate: 300, tags: ["shopify"] } }),
   });
 
   const body = (await response.json()) as ShopifyResponse<T>;

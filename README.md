@@ -16,6 +16,7 @@ Run `node --test scripts/verify-seo.mjs scripts/verify-shopify.mjs` for metadata
 Production builds require both Shopify variables in the target hosting environment. Preview has separate variables; a failed preview with missing variables must not be fixed by enabling mock data. Runtime API failures reach retryable error boundaries; only real missing resources become 404s.
 
 The sitemap intentionally omits `lastModified`: generic Shopify `updatedAt` has not been verified as a meaningful content-change timestamp. Add it only when backed by a reliable editorial timestamp.
+Sitemap requests fetch publication data without caching and render dynamically. This avoids stale URL inventories across the hosting route cache and Shopify fetch cache; an upstream failure returns an error instead of successful partial XML. Other storefront data retains its five-minute cache.
 Policy drafts stay outside public routes and the sitemap until the owner approves the actual business terms. Do not infer return/shipping schema from placeholders.
 
 ## Production domain
