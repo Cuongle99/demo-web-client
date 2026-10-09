@@ -20,7 +20,7 @@ export const siteConfig = {
   url: resolveSiteUrl(process.env.NEXT_PUBLIC_SITE_URL),
   phone: "0967.088.154",
   phoneHref: "tel:+84967088154",
-  email: "info@toantammedical.vn",
+  email: "thietbiytetoantam@gmail.com",
   address: "Số 273, Đ. Lý Thường Kiệt, P.15, Q.11, TP.HCM",
   nav: [
     { label: "Trang chủ", href: "/" },
