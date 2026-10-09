@@ -3,7 +3,6 @@ import { PHASE_PRODUCTION_BUILD } from "next/constants";
 import { shouldUseMockData } from "./src/lib/shopify/config";
 
 const nextConfig: NextConfig = {
-  experimental: { inlineCss: true },
   images: { remotePatterns: [{ protocol: "https", hostname: "cdn.shopify.com" }] },
   devIndicators: false,
   redirects: async () => [
