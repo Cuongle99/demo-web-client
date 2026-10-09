@@ -4,14 +4,13 @@ import { SubmitForm } from "@/components/forms/SubmitForm";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { siteConfig } from "@/config/site";
 import { getSeoPage } from "@/lib/shopify/seo-content";
-import { DEFAULT_SOCIAL_IMAGE } from "@/lib/seo";
+import { pageMetadata } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
   const seo = await getSeoPage("/contact");
   const title = seo?.title || "Liên hệ";
   const description = seo?.description || "Liên hệ Toàn Tâm Medical để được tư vấn thiết bị y tế cho gia đình, phòng khám hoặc bệnh viện.";
-  return { title, description, alternates: { canonical: "/contact" },
-    openGraph: { title, description, images: [seo?.socialImage?.url || DEFAULT_SOCIAL_IMAGE] } };
+  return pageMetadata({ title, description, path: "/contact", image: seo?.socialImage?.url });
 }
 
 export default async function ContactPage() {

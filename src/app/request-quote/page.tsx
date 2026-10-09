@@ -4,14 +4,13 @@ import { SubmitForm } from "@/components/forms/SubmitForm";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { getProduct } from "@/lib/shopify/products";
 import { getSeoPage } from "@/lib/shopify/seo-content";
-import { DEFAULT_SOCIAL_IMAGE } from "@/lib/seo";
+import { pageMetadata } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
   const seo = await getSeoPage("/request-quote");
   const title = seo?.title || "Yêu cầu báo giá";
   const description = seo?.description || "Gửi yêu cầu báo giá thiết bị y tế tới Toàn Tâm Medical cho nhu cầu gia đình, phòng khám và bệnh viện.";
-  return { title, description, alternates: { canonical: "/request-quote" },
-    openGraph: { title, description, images: [seo?.socialImage?.url || DEFAULT_SOCIAL_IMAGE] } };
+  return pageMetadata({ title, description, path: "/request-quote", image: seo?.socialImage?.url });
 }
 
 export default async function QuotePage({ searchParams }: PageProps<"/request-quote">) {

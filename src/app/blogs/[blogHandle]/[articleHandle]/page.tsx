@@ -4,7 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { getArticle } from "@/lib/shopify/blogs";
-import { articleMetaDescription, breadcrumbSchema, DEFAULT_SOCIAL_IMAGE, jsonLdString } from "@/lib/seo";
+import { articleMetaDescription, breadcrumbSchema, DEFAULT_SOCIAL_IMAGE, jsonLdString, pageMetadata } from "@/lib/seo";
 import { siteConfig } from "@/config/site";
 
 function normalizeArticleHeadings(html: string) {
@@ -22,9 +22,8 @@ export async function generateMetadata({ params }: PageProps<"/blogs/[blogHandle
   if (!article) notFound();
   const title = article.seo.title || article.title;
   const description = articleMetaDescription(article);
-  return { title, description, alternates: { canonical: path },
-    openGraph: { title, description, type: "article", publishedTime: article.publishedAt,
-      images: [article.image?.url || DEFAULT_SOCIAL_IMAGE] } };
+  return pageMetadata({ title, description, path,
+    image: article.image?.url, publishedTime: article.publishedAt });
 }
 
 export default async function ArticlePage({ params }: PageProps<"/blogs/[blogHandle]/[articleHandle]">) {
@@ -42,7 +41,8 @@ export default async function ArticlePage({ params }: PageProps<"/blogs/[blogHan
     datePublished: article.publishedAt,
     ...(article.author ? { author: { "@type": "Person", name: article.author } } : {}),
     ...(article.image ? { image: article.image.url } : {}),
-    publisher: { "@type": "Organization", name: siteConfig.name },
+    publisher: { "@type": "Organization", "@id": new URL("/#organization", siteConfig.url).href, name: siteConfig.name, url: siteConfig.url, logo: { "@type": "ImageObject", url: new URL(DEFAULT_SOCIAL_IMAGE, siteConfig.url).href } },
+    inLanguage: "vi-VN",
   };
   return <article className="article-page container">
     <Breadcrumb items={[{ label: "Trang chủ", href: "/" }, { label: "Tin tức", href: "/blogs" }, { label: article.blogTitle }, { label: article.title }]} />

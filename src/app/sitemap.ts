@@ -1,3 +1,18 @@
-import type { MetadataRoute } from "next"; import { siteConfig } from "@/config/site"; import { getProducts } from "@/lib/shopify/products"; import { getCollections } from "@/lib/shopify/collections"; import { getBlogArticles } from "@/lib/shopify/blogs";
+import type { MetadataRoute } from "next";
+import { siteConfig } from "@/config/site";
+import { getSitemapResources } from "@/lib/shopify/sitemap";
+
 export const revalidate = 300;
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> { const [products, collections, articles] = await Promise.all([getProducts(100), getCollections(100), getBlogArticles(100)]); const routes = ["", "/products", "/collections", "/blogs", "/contact", "/request-quote"]; return [...routes.map((path) => ({ url: `${siteConfig.url}${path}`, changeFrequency: "weekly" as const, priority: path === "" ? 1 : .7 })), ...products.map((product) => ({ url: `${siteConfig.url}/products/${product.handle}`, changeFrequency: "weekly" as const, priority: .8 })), ...collections.map((collection) => ({ url: `${siteConfig.url}/collections/${collection.handle}`, changeFrequency: "weekly" as const, priority: .75 })), ...articles.map((article) => ({ url: `${siteConfig.url}/blogs/${article.blogHandle}/${article.handle}`, lastModified: article.publishedAt, changeFrequency: "monthly" as const, priority: .65 }))]; }
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const resources = await getSitemapResources();
+  const routes = ["/", "/products", "/collections", "/blogs", "/contact", "/request-quote"];
+  const entries: MetadataRoute.Sitemap = [
+    ...routes.map((path) => ({ url: new URL(path, siteConfig.url).href })),
+    ...resources.map(({ path, lastModified }) => ({
+      url: new URL(path, siteConfig.url).href,
+      ...(lastModified ? { lastModified } : {}),
+    })),
+  ];
+  return [...new Map(entries.map((entry) => [entry.url, entry])).values()];
+}

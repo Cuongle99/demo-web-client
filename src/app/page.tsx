@@ -12,21 +12,18 @@ import { getCollections } from "@/lib/shopify/collections";
 import { getBlogArticles } from "@/lib/shopify/blogs";
 import { getHomepageHeroes } from "@/lib/shopify/content";
 import { getSeoPage } from "@/lib/shopify/seo-content";
-import { DEFAULT_SOCIAL_IMAGE } from "@/lib/seo";
+import { jsonLdString, pageMetadata, websiteSchema } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
   const seo = await getSeoPage("/");
   const description = seo?.description || "Thiết bị y tế chính hãng cho gia đình, bệnh viện và phòng khám. Khám phá sản phẩm và nhận tư vấn từ Toàn Tâm Medical.";
-  return {
-    title: { absolute: seo?.title || "TOÀN TÂM | Thiết bị y tế chính hãng" },
+  return pageMetadata({
+    title: seo?.title || "TOÀN TÂM | Thiết bị y tế chính hãng",
+    absoluteTitle: true,
     description,
-    alternates: { canonical: "/" },
-    openGraph: {
-      title: seo?.title || "Toàn Tâm Medical",
-      description,
-      images: [seo?.socialImage?.url || DEFAULT_SOCIAL_IMAGE],
-    },
-  };
+    path: "/",
+    image: seo?.socialImage?.url,
+  });
 }
 
 export default async function Home() {
@@ -40,6 +37,7 @@ export default async function Home() {
 
   return (
     <div className="page-shell">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(websiteSchema()) }} />
       <Hero slides={heroes} />
       <section className="home-intro" aria-labelledby="home-title">
         <p className="eyebrow">Toàn Tâm Medical</p>

@@ -6,15 +6,14 @@ import { CollectionIcon } from "@/components/collection/CollectionIcon";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { getCollections } from "@/lib/shopify/collections";
 import { getSeoPage } from "@/lib/shopify/seo-content";
-import { DEFAULT_SOCIAL_IMAGE } from "@/lib/seo";
+import { pageMetadata } from "@/lib/seo";
 import { categories } from "@/lib/mock-data";
 
 export async function generateMetadata(): Promise<Metadata> {
   const seo = await getSeoPage("/collections");
   const title = seo?.title || "Danh mục sản phẩm";
   const description = seo?.description || "Khám phá các danh mục thiết bị chăm sóc sức khỏe và hỗ trợ phục hồi chức năng tại Toàn Tâm Medical.";
-  return { title, description, alternates: { canonical: "/collections" },
-    openGraph: { title, description, images: [seo?.socialImage?.url || DEFAULT_SOCIAL_IMAGE] } };
+  return pageMetadata({ title, description, path: "/collections", image: seo?.socialImage?.url });
 }
 
 export default async function CollectionsPage() {

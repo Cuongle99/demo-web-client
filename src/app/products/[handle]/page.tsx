@@ -9,7 +9,7 @@ import { HorizontalCarousel } from "@/components/ui/HorizontalCarousel";
 import { getProduct, getProducts } from "@/lib/shopify/products";
 import { relatedProducts } from "@/lib/shopify/related-products";
 import { metafieldValue, parseReferences, parseTechnicalSpecs } from "@/lib/shopify/item-content";
-import { breadcrumbSchema, jsonLdString, productMetaDescription, productSchema, productVariantKey } from "@/lib/seo";
+import { breadcrumbSchema, jsonLdString, pageMetadata, productMetaDescription, productSchema, productVariantKey } from "@/lib/seo";
 
 export async function generateMetadata({ params }: PageProps<"/products/[handle]">): Promise<Metadata> {
   const { handle } = await params;
@@ -19,16 +19,13 @@ export async function generateMetadata({ params }: PageProps<"/products/[handle]
   const title = shopifyTitle || product.title;
   const description = productMetaDescription(product);
 
-  return {
-    title: shopifyTitle ? { absolute: shopifyTitle } : title,
+  return pageMetadata({
+    title,
+    absoluteTitle: Boolean(shopifyTitle),
     description,
-    alternates: { canonical: `/products/${handle}` },
-    openGraph: {
-      title,
-      description,
-      images: [product.featuredImage?.url || "/assets/logo-toan-tam.png"],
-    },
-  };
+    path: `/products/${encodeURIComponent(product.handle)}`,
+    image: product.featuredImage?.url,
+  });
 }
 
 export default async function ProductPage({ params, searchParams }: PageProps<"/products/[handle]">) {

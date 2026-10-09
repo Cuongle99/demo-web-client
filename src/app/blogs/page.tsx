@@ -4,14 +4,13 @@ import Link from "next/link";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { getBlogArticles } from "@/lib/shopify/blogs";
 import { getSeoPage } from "@/lib/shopify/seo-content";
-import { DEFAULT_SOCIAL_IMAGE } from "@/lib/seo";
+import { pageMetadata } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
   const seo = await getSeoPage("/blogs");
   const title = seo?.title || "Tin tức - Kiến thức";
   const description = seo?.description || "Kiến thức chọn thiết bị chăm sóc sức khỏe, hỗ trợ vận động và phục hồi chức năng tại nhà từ Toàn Tâm Medical.";
-  return { title, description, alternates: { canonical: "/blogs" },
-    openGraph: { title, description, images: [seo?.socialImage?.url || DEFAULT_SOCIAL_IMAGE] } };
+  return pageMetadata({ title, description, path: "/blogs", image: seo?.socialImage?.url });
 }
 
 export default async function BlogsPage() {

@@ -7,7 +7,7 @@ import { ProductGrid } from "@/components/product/ProductGrid";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { getProductsPage, type ProductSortKey } from "@/lib/shopify/products";
 import { getSeoPage } from "@/lib/shopify/seo-content";
-import { DEFAULT_SOCIAL_IMAGE } from "@/lib/seo";
+import { pageMetadata } from "@/lib/seo";
 
 const FALLBACK_DESCRIPTION = "Tìm kiếm, lọc và sắp xếp sản phẩm thiết bị y tế cho gia đình, bệnh viện và phòng khám tại Toàn Tâm Medical.";
 
@@ -53,13 +53,13 @@ export async function generateMetadata({ searchParams }: { searchParams: Promise
     clean(params.minPrice) || clean(params.maxPrice) || clean(params.sort));
   const title = seo?.title || "Tất cả sản phẩm";
   const description = seo?.description || FALLBACK_DESCRIPTION;
-  return {
+  return pageMetadata({
     title: !filtered && page > 1 ? `${title} - Trang ${page}` : title,
     description,
-    alternates: { canonical: !filtered && page > 1 ? `/products?page=${page}` : "/products" },
-    robots: filtered ? { index: false, follow: true } : undefined,
-    openGraph: { title, description, images: [seo?.socialImage?.url || DEFAULT_SOCIAL_IMAGE] },
-  };
+    path: !filtered && page > 1 ? `/products?page=${page}` : "/products",
+    noindex: filtered,
+    image: seo?.socialImage?.url,
+  });
 }
 
 export default async function ProductsPage({ searchParams }: { searchParams: Promise<ProductsSearchParams> }) {

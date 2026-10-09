@@ -6,7 +6,7 @@ import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { CatalogPagination } from "@/components/product/CatalogPagination";
 import { ProductGrid } from "@/components/product/ProductGrid";
 import { getCollection, getCollectionPage, type CollectionSortKey } from "@/lib/shopify/collections";
-import { breadcrumbSchema, DEFAULT_SOCIAL_IMAGE, jsonLdString } from "@/lib/seo";
+import { breadcrumbSchema, pageMetadata, jsonLdString } from "@/lib/seo";
 
 const PAGE_SIZE = 12;
 
@@ -47,13 +47,13 @@ export async function generateMetadata({ params, searchParams }: PageProps<"/col
   const description = collection.seo.description || collection.description ||
     `Khám phá sản phẩm trong danh mục ${collection.title} tại Toàn Tâm Medical. Xem đặc điểm, giá và nhận tư vấn lựa chọn phù hợp.`;
   const canonicalPath = `/collections/${encodeURIComponent(collection.handle)}`;
-  return {
+  return pageMetadata({
     title: !filtered && page > 1 ? `${title} - Trang ${page}` : title,
     description,
-    alternates: { canonical: !filtered && page > 1 ? `${canonicalPath}?page=${page}` : canonicalPath },
-    robots: filtered ? { index: false, follow: true } : undefined,
-    openGraph: { title, description, images: [collection.image?.url || DEFAULT_SOCIAL_IMAGE] },
-  };
+    path: !filtered && page > 1 ? `${canonicalPath}?page=${page}` : canonicalPath,
+    noindex: filtered,
+    image: collection.image?.url,
+  });
 }
 
 export default async function CollectionPage({ params, searchParams }: PageProps<"/collections/[handle]">) {

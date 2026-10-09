@@ -1,7 +1,60 @@
+import type { Metadata } from "next";
 import type { BlogArticle, Product, ProductVariant } from "@/lib/shopify/types";
 import { siteConfig } from "@/config/site";
 
 export const DEFAULT_SOCIAL_IMAGE = "/assets/logo-toan-tam.png";
+
+export function pageMetadata({ title, description, path, image = DEFAULT_SOCIAL_IMAGE, absoluteTitle = false, noindex = false, publishedTime }: {
+  title: string;
+  description: string;
+  path: string;
+  image?: string;
+  absoluteTitle?: boolean;
+  noindex?: boolean;
+  publishedTime?: string;
+}): Metadata {
+  const url = new URL(path, siteConfig.url).href;
+  const socialImage = new URL(image, siteConfig.url).href;
+  return {
+    title: absoluteTitle ? { absolute: title } : title,
+    description,
+    alternates: { canonical: url },
+    ...(noindex ? { robots: { index: false, follow: true } } : {}),
+    // Next.js replaces nested metadata objects; every page needs the full set.
+    openGraph: {
+      title, description, url, siteName: siteConfig.name, locale: "vi_VN",
+      images: [{ url: socialImage, alt: title }],
+      ...(publishedTime ? { type: "article", publishedTime } : { type: "website" }),
+    },
+    twitter: {
+      card: "summary_large_image", title, description,
+      images: [{ url: socialImage, alt: title }],
+    },
+  };
+}
+
+export function websiteSchema() {
+  const url = new URL("/", siteConfig.url).href;
+  const organizationId = `${url}#organization`;
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization", "@id": organizationId,
+        name: siteConfig.name, alternateName: siteConfig.shortName, url,
+        logo: new URL(DEFAULT_SOCIAL_IMAGE, url).href,
+        telephone: siteConfig.phoneHref.replace("tel:", ""),
+        email: siteConfig.email,
+        address: { "@type": "PostalAddress", streetAddress: siteConfig.address, addressCountry: "VN" },
+      },
+      {
+        "@type": "WebSite", "@id": `${url}#website`,
+        name: siteConfig.name, alternateName: "Thiết bị y tế Toàn Tâm", url,
+        inLanguage: "vi-VN", publisher: { "@id": organizationId },
+      },
+    ],
+  };
+}
 
 export function conciseText(text: string, maxLength = 175) {
   const clean = text.replace(/<[^>]*>/g, " ").replace(/&nbsp;/gi, " ")
