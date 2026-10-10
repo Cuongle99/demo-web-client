@@ -32,8 +32,8 @@ const sortOptions: Array<{ value: string; label: string; sortKey: ProductSortKey
   { value: "title-desc", label: "Tên: Z–A", sortKey: "TITLE", reverse: true },
 ];
 
-function clean(value?: string) {
-  return value?.trim() ?? "";
+function clean(value?: string | string[]) {
+  return typeof value === "string" ? value.trim().slice(0, 200) : "";
 }
 
 function price(value?: string) {

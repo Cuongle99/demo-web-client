@@ -6,20 +6,24 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "node --test scripts/verify-seo.mjs scripts/verify-shopify.mjs scripts/verify-security.mjs",
+    "audit:production": "npm audit --omit=dev"
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.1.10",
-    "next": "16.3.2",
+    "next": "16.3.8",
     "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "react-dom": "19.2.8",
+    "sanitize-html": "2.18.0"
   },
   "devDependencies": {
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/sanitize-html": "2.16.2",
     "eslint": "^9",
-    "eslint-config-next": "16.3.2",
+    "eslint-config-next": "16.3.8",
     "typescript": "^5"
   }
 }

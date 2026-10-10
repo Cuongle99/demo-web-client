@@ -10,6 +10,7 @@ import { getProduct, getProducts } from "@/lib/shopify/products";
 import { relatedProducts } from "@/lib/shopify/related-products";
 import { metafieldValue, parseReferences, parseTechnicalSpecs } from "@/lib/shopify/item-content";
 import { breadcrumbSchema, jsonLdString, pageMetadata, productMetaDescription, productSchema, productVariantKey } from "@/lib/seo";
+import { safeRichText } from "@/lib/safe-html";
 
 export async function generateMetadata({ params }: PageProps<"/products/[handle]">): Promise<Metadata> {
   const { handle } = await params;
@@ -61,7 +62,7 @@ export default async function ProductPage({ params, searchParams }: PageProps<"/
           <span className="product-description__eyebrow">Thông tin chi tiết</span>
           <h2>Mô tả sản phẩm</h2>
         </div>
-        <div className="product-description__content" dangerouslySetInnerHTML={{ __html: product.descriptionHtml }} />
+        <div className="product-description__content" dangerouslySetInnerHTML={{ __html: safeRichText(product.descriptionHtml) }} />
       </section>
       <ProductSpecifications product={product} extra={technicalSpecs} />
       {references.length ? <section className="product-sources"><h2>Nguồn tham khảo</h2><ul>{references.map((reference) => <li key={reference.url}><a href={reference.url} target="_blank" rel="noopener noreferrer">{reference.label}</a></li>)}</ul></section> : null}

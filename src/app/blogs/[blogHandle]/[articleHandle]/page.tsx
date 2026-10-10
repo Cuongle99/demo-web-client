@@ -6,6 +6,7 @@ import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { getArticle } from "@/lib/shopify/blogs";
 import { articleMetaDescription, breadcrumbSchema, DEFAULT_SOCIAL_IMAGE, jsonLdString, pageMetadata } from "@/lib/seo";
 import { siteConfig } from "@/config/site";
+import { safeRichText } from "@/lib/safe-html";
 
 function normalizeArticleHeadings(html: string) {
   if (/<h2\b/i.test(html)) return html;
@@ -54,7 +55,7 @@ export default async function ArticlePage({ params }: PageProps<"/blogs/[blogHan
     </header>
     {article.image && <div className="article-page__hero"><Image src={article.image.url} alt={article.image.altText || article.title} fill loading="eager" fetchPriority="high" sizes="(max-width: 900px) 100vw, 900px" /></div>}
     {article.excerpt && <p className="article-page__intro">{article.excerpt}</p>}
-    <div className="article-content" dangerouslySetInnerHTML={{ __html: normalizeArticleHeadings(article.contentHtml) }} />
+    <div className="article-content" dangerouslySetInnerHTML={{ __html: safeRichText(normalizeArticleHeadings(article.contentHtml)) }} />
     <p className="article-page__note">Nội dung cung cấp thông tin tham khảo về thiết bị hỗ trợ. Việc lựa chọn và sử dụng trong điều trị cần theo hướng dẫn của nhân viên y tế.</p>
     {article.references.length ? <section className="article-page__sources"><h2>Nguồn tham khảo</h2><ul>{article.references.map((reference) => <li key={reference.url}><a href={reference.url} target="_blank" rel="noopener noreferrer">{reference.label}</a></li>)}</ul></section> : null}
     {article.relatedLinks.length ? <section className="article-page__related"><h2>Khám phá thêm</h2><ul>{article.relatedLinks.map((link) => <li key={link.href}><Link href={link.href}>{link.label}</Link></li>)}</ul></section> : null}
