@@ -3,6 +3,19 @@ import { PHASE_PRODUCTION_BUILD } from "next/constants";
 import { shouldUseMockData } from "./src/lib/shopify/config";
 
 const nextConfig: NextConfig = {
+  poweredByHeader: false,
+  headers: async () => [{
+    source: "/:path*",
+    headers: [
+      { key: "X-Content-Type-Options", value: "nosniff" },
+      { key: "X-Frame-Options", value: "DENY" },
+      { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+      { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+      // Baseline CSP supports static Next.js hydration. A strict script policy
+      // needs a separate nonce/dynamic-rendering rollout.
+      { key: "Content-Security-Policy", value: "base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'" },
+    ],
+  }],
   images: { remotePatterns: [{ protocol: "https", hostname: "cdn.shopify.com" }] },
   devIndicators: false,
   redirects: async () => [

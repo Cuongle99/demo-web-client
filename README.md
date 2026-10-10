@@ -13,6 +13,11 @@ The contact adapter posts to `CONTACT_WEBHOOK_URL` when configured. This keeps R
 Run `npm run lint` and `npm run build` before deployment.
 Run `npx next typegen` and `npx tsc --noEmit` for type checking without API credentials.
 Run `node --test scripts/verify-seo.mjs scripts/verify-shopify.mjs` for metadata, sitemap, configuration and upstream failure checks.
+Run `npm test` for the full regression suite, including request validation and rich-text sanitization. Run `npm run audit:production` to check runtime dependencies before deployment.
+
+The public inquiry APIs accept same-origin JSON browser requests up to 32 KiB and cap body-reading and webhook delivery time at 10 seconds. Production contact webhooks must use HTTPS and must not redirect. Configure distributed rate limits in Vercel Firewall for POST `/api/contact` and `/api/request-quote`; application origin checks do not prevent scripted spam. Start with a logging rule and inspect real traffic before enforcing a threshold.
+
+CMS product descriptions and article bodies are sanitized on the server before HTML rendering. Security headers prevent framing, MIME sniffing and object embeds. The baseline CSP intentionally has no `script-src` restriction; a strict nonce policy requires separately validating Next.js dynamic rendering and caching.
 Production builds require both Shopify variables in the target hosting environment. Preview has separate variables; a failed preview with missing variables must not be fixed by enabling mock data. Runtime API failures reach retryable error boundaries; only real missing resources become 404s.
 
 The sitemap intentionally omits `lastModified`: generic Shopify `updatedAt` has not been verified as a meaningful content-change timestamp. Add it only when backed by a reliable editorial timestamp.
