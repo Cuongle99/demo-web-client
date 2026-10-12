@@ -20,6 +20,11 @@ const nextConfig: NextConfig = {
   devIndicators: false,
   redirects: async () => [
     {
+      source: "/san-pham/20-bong-gai-tap-tay-tap-phuc-hoi-chuc-nang-bong-gai-tap-tri-lieu.html",
+      destination: "https://www.thiet-bi-y-te-toan-tam.com/products/bong-gai-tap-tay-phuc-hoi-chuc-nang",
+      permanent: true,
+    },
+    {
       source: "/products/bong-gai-tap-tay-tap-phuc-hoi-chuc-nang-ban-tay-1735155256187126842",
       destination: "/products/bong-gai-tap-tay-phuc-hoi-chuc-nang",
       permanent: true,
