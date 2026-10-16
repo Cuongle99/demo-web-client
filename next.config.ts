@@ -20,6 +20,16 @@ const nextConfig: NextConfig = {
   devIndicators: false,
   redirects: async () => [
     {
+      source: "/san-pham/20-40-bong-gai-tap-tay-tap-phuc-hoi-chuc-nang-bong-gai-tap-tri-lieu.html",
+      destination: "https://www.thiet-bi-y-te-toan-tam.com/products/bong-gai-tap-tay-phuc-hoi-chuc-nang",
+      permanent: true,
+    },
+    {
+      source: "/san-pham/24-bon-cau-di-dong-thong-minh-bo-ve-sinh-cho-nguoi-gia-nguoi-kho-van-dong-tay-vin-chac-chan-tai-trong-100kg.html",
+      destination: "https://www.thiet-bi-y-te-toan-tam.com/products/bon-cau-di-ong-thong-minh-bo-ve-sinh-cho-nguoi-gia-nguoi-kho-van-ong-tay-vin-cha-1736535339854234682",
+      permanent: true,
+    },
+    {
       source: "/san-pham/20-bong-gai-tap-tay-tap-phuc-hoi-chuc-nang-bong-gai-tap-tri-lieu.html",
       destination: "https://www.thiet-bi-y-te-toan-tam.com/products/bong-gai-tap-tay-phuc-hoi-chuc-nang",
       permanent: true,
